@@ -1,1 +1,1 @@
-module.exports = require('./lib/disco')
+module.exports = require('./lib/pubsub')
