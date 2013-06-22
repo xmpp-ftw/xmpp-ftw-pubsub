@@ -102,6 +102,26 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
+
+        it('Handles basic success response', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('subscribe-basic'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.subscription.should.equal('subscribed')
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.subscribe',
+                request,
+                callback
+            )
+        })
  
     })
 
