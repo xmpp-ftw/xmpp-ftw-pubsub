@@ -1,0 +1,16 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='juliet@example.net/balcony'
+    id='1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <default>
+      <x xmlns='jabber:x:data' type='result'>
+        <field var='FORM_TYPE' type='hidden'>
+          <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+        </field>
+        <field var='pubsub#notifications'><value>1</value></field>
+        <field var='pubsub#include_body'><value>0</value></field>
+      </x>
+    </default>
+  </pubsub>
+</iq>

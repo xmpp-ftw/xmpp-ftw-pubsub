@@ -18,7 +18,8 @@ describe('Publish-Subscribe', function() {
             },
             makeCallback: function(error, data) {
                 this.callback(error, data)
-            }
+            },
+            jid: 'juliet@example.net'
         }
         pubsub = new PubSub()
         pubsub.init(manager)
@@ -530,7 +531,29 @@ describe('Publish-Subscribe', function() {
             })
    
             it('Returns data from successful request', function(done) {
-                done('Not implemented yet')
+                xmpp.once('stanza', function(stanza) {
+                    manager.makeCallback(
+                        helper.getStanza('subscription-options-default')
+                    )
+                })
+                var callback = function(error, data) {
+                    should.not.exist(error)
+                    data.fields.length.should.equal(2)
+                    data.fields[0].var.should.equal('pubsub#notifications')
+                    data.fields[0].value.should.equal('1')
+                    data.fields[1].var.should.equal('pubsub#include_body')
+                    data.fields[1].value.should.equal('0')
+                    done()
+                }
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night'
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.default',
+                    request,
+                    callback
+                )
             })
 
         })
@@ -559,7 +582,7 @@ describe('Publish-Subscribe', function() {
             })
  
             it('Errors when no \'node\' key provided', function(done) {
-                 var request = { to: 'pubsub.shakespeare.lit' }
+                var request = { to: 'pubsub.shakespeare.lit' }
                 xmpp.once('stanza', function() {
                     done('Unexpected outgoing stanza')
                 })
@@ -580,7 +603,26 @@ describe('Publish-Subscribe', function() {
             })
 
             it('Sends expected stanza', function(done) {
-                done('Not implemented yet')
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night'
+                }
+                xmpp.once('stanza', function(stanza) {
+                    stanza.is('iq').should.equal.true
+                    stanza.attrs.type.should.equal('get')
+                    stanza.attrs.to.should.equal(request.to)
+                    stanza.attrs.id.should.exist
+                    stanza.getChild('pubsub', pubsub.NS_PUBSUB).should.exist
+                    var element = stanza.getChild('pubsub').getChild('options')
+                    element.should.exist
+                    element.attrs.node.should.equal(request.node)
+                    done()
+                })
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.get',
+                    request,
+                    function(){}
+                )
             })
 
             it('Handles error response', function(done) {
@@ -607,7 +649,30 @@ describe('Publish-Subscribe', function() {
             })
 
             it('Returns data from successful request', function(done) {
-                done('Not implemented yet')
+                xmpp.once('stanza', function(stanza) {
+                    manager.makeCallback(
+                        helper.getStanza('subscription-options')
+                    )
+                })
+                var callback = function(error, data) {
+                    should.not.exist(error)
+                    data.fields.length.should.equal(2)
+                    data.fields[0].var.should.equal('pubsub#notifications')
+                    data.fields[0].value.should.equal('1')
+                    data.fields[1].var.should.equal('pubsub#include_body')
+                    data.fields[1].value.should.equal('0')
+                    done()
+                }
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night'
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.get',
+                    request,
+                    callback
+                )
+
             })
 
         })
@@ -706,11 +771,66 @@ describe('Publish-Subscribe', function() {
             })
  
             it('Sends expected stanza', function(done) {
-                done('Not implemented yet')
+                xmpp.once('stanza', function(stanza) {
+                    stanza.is('iq').should.be.true
+                    stanza.attrs.type.should.equal('set')
+                    stanza.attrs.to.should.equal(request.to)
+                    stanza.attrs.id.should.exist
+                    var options = stanza.getChild('pubsub', pubsub.NS_PUBSUB)
+                        .getChild('options')
+                    options.attrs.node.should.equal(request.node)
+                    options.attrs.jid.should.equal(request.jid)
+                    var dataForm = options.getChild('x', 'jabber:x:data')
+                    dataForm.should.exist
+                    dataForm.attrs.type.should.equal('form')
+                    dataForm.children.length.should.equal(3)
+                    var fields = dataForm.children
+                    fields[0].attrs.var.should.equal('FORM_TYPE')
+                    fields[0].attrs.type.should.equal('hidden')
+                    fields[0].getChildText('value')
+                        .should.equal(pubsub.NS_SUB_OPTIONS)
+                    fields[1].attrs.var.should.equal('pubsub#notifications')
+                    fields[1].getChildText('value').should.equal('true')
+                    fields[2].attrs.var.should.equal('pubsub#include_body')
+                    fields[2].getChildText('value').should.equal('false')
+                    done()
+                })
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night',
+                    form: [
+                        { var: 'pubsub#notifications', value: true },
+                        { var: 'pubsub#include_body', value: false }
+                    ],
+                    jid: 'romeo@example.com'
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.set',
+                    request,
+                    function() {}
+                )
             })
-   
+    
             it('Fills JID if not provided', function(done) {
-                done('Not implemented yet')
+                xmpp.once('stanza', function(stanza) {
+                    stanza.getChild('pubsub', pubsub.NS_PUBSUB)
+                        .getChild('options')
+                        .attrs.jid.should.equal(manager.jid)
+                    done()
+                })
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night',
+                    form: [
+                        { var: 'pubsub#notifications', value: true },
+                        { var: 'pubsub#include_body', value: false }
+                    ]
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.set',
+                    request,
+                    function() {}
+                )
             })
 
             it('Handles error response stanza', function(done) {
@@ -738,7 +858,24 @@ describe('Publish-Subscribe', function() {
             })
 
             it('Returns true for succesful set', function(done) {
-                done('Not implemented yet')
+                xmpp.once('stanza', function(stanza) {
+                    manager.makeCallback(helper.getStanza('iq-result'))
+                })
+                var callback = function(error, success) {
+                    should.not.exist(error)
+                    success.should.be.true
+                    done()
+                }
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night',
+                    form: []
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.set',
+                    request,
+                    callback
+                )
             })
 
         })
