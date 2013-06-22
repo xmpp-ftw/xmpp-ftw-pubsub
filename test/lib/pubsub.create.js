@@ -240,6 +240,23 @@ describe('Publish-Subscribe', function() {
             socket.emit('xmpp.pubsub.delete', request)
         })
 
+        it('Sends redirect element if requested', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                redirect: 'xmpp:pubsub.shakespeare.lit?;node=hamlet'
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.getChild('pubsub')
+                    .getChild('delete')
+                    .getChild('redirect')
+                    .attrs.uri
+                    .should.equal(request.redirect)
+                done()
+            })
+            socket.emit('xmpp.pubsub.delete', request)
+        })
+
         it('Handles an error stanza response', function(done) {
             xmpp.once('stanza', function(stanza) {
                 manager.makeCallback(helper.getStanza('iq-error'))
@@ -250,6 +267,26 @@ describe('Publish-Subscribe', function() {
                     type: 'cancel',
                     condition: 'error-condition'
                 })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.delete',
+                request,
+                callback
+            )
+        })
+
+        it('Successful response handled ok', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-result'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.should.be.true
                 done()
             }
             var request = {
