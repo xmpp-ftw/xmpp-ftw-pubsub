@@ -24,4 +24,24 @@ describe('Publish-Subscribe', function() {
         pubsub.init(manager)
     })
 
+    describe('Subscribe', function() {
+
+        it('Errors if no \'to\' key provided', function(done) {
+            var request = {}
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'to' key")
+                error.request.should.eql(request)
+                done()
+            }
+            socket.emit('xmpp.pubsub.subscribe', request, callback)
+        })
+        
+    })
+
 })
