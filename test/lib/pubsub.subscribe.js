@@ -37,6 +37,7 @@ describe('Publish-Subscribe', function() {
                 error.condition.should.equal('client-error')
                 error.description.should.equal("Missing 'to' key")
                 error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
                 done()
             }
             socket.emit('xmpp.pubsub.subscribe', request, callback)
@@ -53,6 +54,7 @@ describe('Publish-Subscribe', function() {
                 error.condition.should.equal('client-error')
                 error.description.should.equal("Missing 'node' key")
                 error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
                 done()
             }
             socket.emit('xmpp.pubsub.subscribe', request, callback)
