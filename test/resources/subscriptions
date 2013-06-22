@@ -1,0 +1,11 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='juliet@example.net/balcony'
+    id='1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <subscriptions>
+      <subscription node='twelfth night' jid='juliet@example.net' subscription='subscribed' />
+      <subscription node='a comedy of errors' jid='romeo@example.com' subscription='subscribed' subid='1'/>
+    </subscriptions>
+  </pubsub>
+</iq>

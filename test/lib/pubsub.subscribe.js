@@ -318,19 +318,122 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Sends expected stanza for node owner', function(done) {
-            done('Not implemented')
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                owner: true
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.type.should.equal('get')
+                stanza.attrs.id.should.exist
+                stanza.getChild('pubsub', pubsub.NS_OWNER).should.exist
+                var pubsubElement = stanza.getChild('pubsub')
+                pubsubElement.getChild('subscriptions').should.exist
+                pubsubElement.getChild('subscriptions').attrs.node
+                    .should.equal(request.node)
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscriptions', request)
         })
 
         it('Sends expected stanza for user subscriptions', function(done) {
-            done('Not implemented')
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.type.should.equal('get')
+                stanza.attrs.id.should.exist
+                stanza.getChild('pubsub', pubsub.NS_PUBSUB).should.exist
+                var pubsubElement = stanza.getChild('pubsub')
+                pubsubElement.getChild('subscriptions').should.exist
+                should.not.exist(
+                    pubsubElement.getChild('subscriptions').attrs.node
+                )
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscriptions', request)
         })
 
+        it('Correct stanza for user subscriptions to node', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.type.should.equal('get')
+                stanza.attrs.id.should.exist
+                stanza.getChild('pubsub', pubsub.NS_PUBSUB).should.exist
+                var pubsubElement = stanza.getChild('pubsub')
+                pubsubElement.getChild('subscriptions').should.exist
+                pubsubElement.getChild('subscriptions').attrs.node
+                    .should.equal(request.node)
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscriptions', request)
+        }) 
+
         it('Handles error stanza response', function(done) {
-            done('Not implemented')
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.subscriptions',
+                request,
+                callback
+            )
+
         })
 
         it('Sends a list of subscriptions', function(done) {
-            done('Not implemented')
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('subscriptions'))
+            })
+            var callback = function(error, data) {
+                should.not.exist(error)
+                data.length.should.equal(2)
+                data[0].node.should.equal('twelfth night')
+                data[0].jid.should.eql({
+                    domain: 'example.net',
+                    user: 'juliet'
+                })
+                data[0].subscription.should.equal('subscribed')
+                should.not.exist(data[0].id)
+                data[1].node.should.equal('a comedy of errors')
+                data[1].jid.should.eql({
+                    domain: 'example.com',
+                    user: 'romeo'
+                })
+                data[1].subscription.should.equal('subscribed')
+                data[1].id.should.equal('1')
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.subscriptions',
+                request,
+                callback
+		)
         })
 
     })
