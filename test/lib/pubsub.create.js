@@ -220,5 +220,48 @@ describe('Publish-Subscribe', function() {
             socket.emit('xmpp.pubsub.delete', request, callback)
         })
 
+        it('Sends expected stanza', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.type.should.equal('set')
+                stanza.attrs.id.should.exist
+                stanza.getChild('pubsub', pubsub.NS_PUBSUB).should.exist
+                var pubsubElement = stanza.getChild('pubsub')
+                pubsubElement.getChild('delete').should.exist
+                pubsubElement.getChild('delete').attrs.node
+                    .should.equal(request.node)
+                done()
+            })
+            socket.emit('xmpp.pubsub.delete', request)
+        })
+
+        it('Handles an error stanza response', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.delete',
+                request,
+                callback
+            )
+        })
+
     })
 })
