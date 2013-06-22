@@ -438,4 +438,92 @@ describe('Publish-Subscribe', function() {
 
     })
 
+    describe('Subscription configuration', function() {
+
+        describe('Default configuration', function() {
+ 
+            it('Errors when no \'to\' key provided', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Sends expected stanza', function(done) {
+                done('Not implemented yet')
+            })
+ 
+            it('Sends expected stanza with node', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Handles error response', function(done) {
+                done('Not implemented yet')
+            })
+   
+            it('Returns data from successful request', function(done) {
+                done('Not implemented yet')
+            })
+
+        })
+
+        describe('Get configuration', function() {
+
+            it('Errors when no \'to\' key provided', function(done) {
+                done('Not implemented yet')
+            })
+ 
+            it('Errors when no \'node\' key provided', function(done) {
+ 
+            })
+
+            it('Sends expected stanza', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Handles error response', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Returns data from successful request', function(done) {
+                done('Not implemented yet')
+            })
+
+        })
+
+        describe('Set configuration', function() {
+
+            it('Errors when no \'to\' key provided', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Errors when no \'node\' key provided', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Errors when no data form provided', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Errors with unparsable data form', function(done) {
+                done('Not implemented yet')
+            })
+ 
+            it('Sends expected stanza', function(done) {
+                done('Not implemented yet')
+            })
+   
+            it('Fills JID if not provided', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Handles error response stanza', function(done) {
+                done('Not implemented yet')
+            })
+
+            it('Returns true for succesful set', function(done) {
+                done('Not implemented yet')
+            })
+
+        })
+
+    })
+
 })
