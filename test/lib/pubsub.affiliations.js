@@ -175,4 +175,175 @@ describe('Publish-Subscribe', function() {
         })
 
     })
+
+    describe('Set affiliation', function() {
+
+        it('Errors when missing \'to\' key', function(done) {
+            var request = {}
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'to' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                callback
+            )
+        })
+
+        it('Errors when missing \'node\' key', function(done) {
+            var request = { to: 'pubsub.shakespeare.lit' }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'node' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                callback
+            )
+        })
+
+        it('Errors when missing \'jid\' key', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'jid' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                callback
+            )
+        })
+
+        it('Errors when missing \'affiliation\' key', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'romeo@example.com'
+            }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'affiliation' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                callback
+            )
+        })
+
+        it('Sends expected stanza', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'romeo@example.com',
+                affiliation: 'moderator'
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.id.should.exist
+                stanza.attrs.to.should.equal(request.to)
+                var element = stanza
+                    .getChild('pubsub', pubsub.NS_OWNER)
+                    .getChild('affiliations')
+                element.should.exist
+                element.attrs.node.should.equal(request.node)
+                element.children.length.should.equal(1)
+                element.children[0].attrs.jid.should.equal(request.jid)
+                element.children[0].attrs.affiliation
+                    .should.equal(request.affiliation)
+                done()
+            })
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                function() {}
+            )
+        })
+
+        it('Handles error stanza', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'romeo@example.com',
+                affiliation: 'publisher'
+            }
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                callback
+            )
+        })
+
+        it('Sends true with successful request', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-result'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.should.be.true
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'romeo@example.com',
+                affiliation: 'publisher'
+            }
+            socket.emit(
+                'xmpp.pubsub.affiliation',
+                request,
+                callback
+            )
+        })
+    })
+
 })
