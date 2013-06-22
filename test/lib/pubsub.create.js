@@ -203,5 +203,22 @@ describe('Publish-Subscribe', function() {
             socket.emit('xmpp.pubsub.delete', request, callback)
         })
 
+        it('Errors if no \'node\' key', function(done) {
+            var request = { to: 'pubsub.shakespeare.lit' }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'node' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.delete', request, callback)
+        })
+
     })
 })
