@@ -142,6 +142,27 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         }) 
+
+        it('Handles configuration required', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('subscribe-options'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.configuration.required.should.be.true
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.subscribe',
+                request,
+                callback
+            )
+        })
+
     })
 
 })
