@@ -281,4 +281,45 @@ describe('Publish-Subscribe', function() {
 
     })
 
+    describe('Get node subscriptions', function() {
+
+        it('Errors if missing \'to\' key', function(done) {
+            var request = {}
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'to' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.subscriptions', request, callback)
+        })
+
+        it('Errors if node subs requested and no owner', function(done) {
+            done('Not implemented')
+        })
+
+        it('Sends expected stanza for node owner', function(done) {
+            done('Not implemented')
+        })
+
+        it('Sends expected stanza for user subscriptions', function(done) {
+            done('Not implemented')
+        })
+
+        it('Handles error stanza response', function(done) {
+            done('Not implemented')
+        })
+
+        it('Sends a list of subscriptions', function(done) {
+            done('Not implemented')
+        })
+
+    })
+
 })
