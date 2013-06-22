@@ -156,6 +156,11 @@ describe('Publish-Subscribe', function() {
                 data[0].affiliation.should.equal('owner')
                 data[1].node.should.equal('a comedy of errors')
                 data[1].affiliation.should.equal('publisher')
+                // Injected to show response can handle JID
+                data[1].jid.should.eql({
+                    domain: 'example.com',
+                    user: 'romeo'
+                })
                 done()
             }
             var request = {

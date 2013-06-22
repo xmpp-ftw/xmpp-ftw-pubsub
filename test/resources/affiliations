@@ -5,7 +5,9 @@
   <pubsub xmlns='http://jabber.org/protocol/pubsub'>
     <affiliations>
       <affiliation node='twelfth night' affiliation='owner' />
-      <affiliation node='a comedy of errors' affiliation='publisher' />
+      <affiliation node='a comedy of errors' 
+                   affiliation='publisher'
+                   jid='romeo@example.com' />
     </affiliations>
   </pubsub>
 </iq>
