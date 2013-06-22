@@ -601,7 +601,7 @@ describe('Publish-Subscribe', function() {
                     done()
                 }
                 socket.emit(
-                    'xmpp.pubsub.subscription.config.default',
+                    'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
                 )
@@ -626,7 +626,7 @@ describe('Publish-Subscribe', function() {
                     done()
                 }
                 socket.emit(
-                    'xmpp.pubsub.subscription.config.default',
+                    'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
                 )
