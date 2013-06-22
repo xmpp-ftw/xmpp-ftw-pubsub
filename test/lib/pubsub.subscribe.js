@@ -122,7 +122,26 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
- 
+
+        it('Handles success response with subscription id', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('subscribe-subid'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.id.should.equal('123456')
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.subscribe',
+                request,
+                callback
+            )
+        }) 
     })
 
 })
