@@ -443,7 +443,24 @@ describe('Publish-Subscribe', function() {
         describe('Default configuration', function() {
  
             it('Errors when no \'to\' key provided', function(done) {
-                done('Not implemented yet')
+                var request = {}
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing 'to' key")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.default',
+                    request,
+                    callback
+                )
             })
 
             it('Sends expected stanza', function(done) {
@@ -467,11 +484,45 @@ describe('Publish-Subscribe', function() {
         describe('Get configuration', function() {
 
             it('Errors when no \'to\' key provided', function(done) {
-                done('Not implemented yet')
+                var request = {}
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing 'to' key")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.get',
+                    request,
+                    callback
+                )
             })
  
             it('Errors when no \'node\' key provided', function(done) {
- 
+                 var request = { to: 'pubsub.shakespeare.lit' }
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing 'node' key")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.get',
+                    request,
+                    callback
+                )
             })
 
             it('Sends expected stanza', function(done) {
@@ -491,19 +542,94 @@ describe('Publish-Subscribe', function() {
         describe('Set configuration', function() {
 
             it('Errors when no \'to\' key provided', function(done) {
-                done('Not implemented yet')
+                var request = {}
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing 'to' key")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.set',
+                    request,
+                    callback
+                )
             })
 
             it('Errors when no \'node\' key provided', function(done) {
-                done('Not implemented yet')
+                var request = { to: 'pubsub.shakespeare.lit' }
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing 'node' key")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.set',
+                    request,
+                    callback
+                )
             })
 
             it('Errors when no data form provided', function(done) {
-                done('Not implemented yet')
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night'
+                }
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing 'form' key")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.default',
+                    request,
+                    callback
+                )
             })
 
             it('Errors with unparsable data form', function(done) {
-                done('Not implemented yet')
+                var request = {
+                    to: 'pubsub.shakespeare.lit',
+                    node: 'twelfth night',
+                    form: true
+                }
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                var callback = function(error, success) {
+                    should.not.exist(success)
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Badly formatted data form")
+                    error.request.should.eql(request)
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                }
+                socket.emit(
+                    'xmpp.pubsub.subscription.config.default',
+                    request,
+                    callback
+                )
             })
  
             it('Sends expected stanza', function(done) {
