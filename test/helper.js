@@ -16,3 +16,7 @@ Eventer.prototype.send = function(stanza) {
     this.emit('stanza', stanza.root())
 }
 exports.Eventer = Eventer
+
+exports.failingItemParser = function() {
+   throw new Error('FAIL!')
+}
