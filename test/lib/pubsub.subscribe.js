@@ -301,7 +301,20 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Errors if node subs requested and no owner', function(done) {
-            done('Not implemented')
+            var request = { to: 'pubsub.shakespeare.lit', owner: true }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Can only do 'owner' for a node")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.subscriptions', request, callback)        
         })
 
         it('Sends expected stanza for node owner', function(done) {
