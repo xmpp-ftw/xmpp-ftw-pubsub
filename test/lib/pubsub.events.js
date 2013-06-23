@@ -134,6 +134,237 @@ describe('Publish-Subscribe', function() {
             socket.once('xmpp.pubsub.push.authorisation', callback)
             pubsub.handle(stanza)
         })
+
+    })
+
+    describe('Handles incoming event notifications', function() {
+
+        describe('New items', function() {
+
+            it('Handles basic item notification', function(done) {
+                var stanza = new ltx.parse(
+                    '<message from="pubsub.shakespeare.lit">'
+                    + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                    + '<items node="twelfth night">'
+                    + '<item id="item-5"></item>'
+                    + '</items></event></message>'
+                )
+                socket.once('xmpp.pubsub.push.item', function(data) {
+                    data.from.should.equal('pubsub.shakespeare.lit')
+                    data.node.should.equal('twelfth night')
+                    data.id.should.equal('item-5')
+                    done()
+                })
+                pubsub.handle(stanza)
+            })
+
+            it('Handles full item notification', function(done) {
+                var stanza = new ltx.parse(
+                    '<message from="pubsub.shakespeare.lit">'
+                    + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                    + '<items node="twelfth night">'
+                        + '<item id="item-5" publisher="romeo@example.com">'
+                            + '<body>item-5-content</body>'
+                        + '</item>'
+                    + '</items></event>'
+                    + '<delay stamp="2013-06-23 20:00:00+0100" />'
+                    + '<headers xmlns="' + pubsub.NS_HEADERS + '">'
+                        + '<header name="key">value</header>'
+                    + '</headers>'
+                    + '</message>'
+                )
+                socket.once('xmpp.pubsub.push.item', function(data) {
+                    data.from.should.equal('pubsub.shakespeare.lit')
+                    data.node.should.equal('twelfth night')
+                    data.id.should.equal('item-5')
+                    data.entry.should.eql({ body: 'item-5-content' })
+                    data.delay.should.equal("2013-06-23 20:00:00+0100")
+                    data.headers.should.eql([
+                        { name: 'key', value: 'value' }
+                    ])
+                    data.publisher.should.eql({
+                        domain: 'example.com',
+                        user: 'romeo'
+                    })
+                    done()
+                })
+                pubsub.handle(stanza)
+            })
+
+        })
+
+        describe('Item retract', function() {
+
+            it('Handles a delete', function(done) {
+                var stanza = new ltx.parse(
+                    '<message from="pubsub.shakespeare.lit">'
+                    + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                    + '<items node="twelfth night">'
+                        + '<retract id="item-5" />'
+                    + '</items></event>'
+                    + '</message>'
+                )
+                socket.once('xmpp.pubsub.push.retract', function(data) {
+                    data.from.should.equal('pubsub.shakespeare.lit')
+                    data.node.should.equal('twelfth night')
+                    data.id.should.equal('item-5')
+                    done()
+                })
+                pubsub.handle(stanza)
+
+            })
+ 
+            it('Handles delete with headers', function(done) {
+                var stanza = new ltx.parse(
+                    '<message from="pubsub.shakespeare.lit">'
+                    + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                    + '<items node="twelfth night">'
+                        + '<retract id="item-5" />'
+                    + '</items></event>'
+                    + '<headers xmlns="' + pubsub.NS_HEADERS + '">'
+                        + '<header name="key">value</header>'
+                    + '</headers>'
+                    + '</message>'
+                )
+                socket.once('xmpp.pubsub.push.retract', function(data) {
+                    data.from.should.equal('pubsub.shakespeare.lit')
+                    data.node.should.equal('twelfth night')
+                    data.id.should.equal('item-5')
+                    data.headers.should.eql([
+                        { name: 'key', value: 'value' }
+                    ])
+                    done()
+                })
+                pubsub.handle(stanza)
+            })
+
+        })
+
+        it('Passes on subscription updates', function(done) {
+            var stanza = new ltx.parse(
+                '<message from="pubsub.shakespeare.lit">'
+                + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                + '<subscription subscription="subscribed" '
+                    + 'node="twelfth night" jid="romeo@example.com" />'
+                + '</event></message>'
+            )
+            socket.once('xmpp.pubsub.push.subscription', function(data) {
+                data.from.should.equal('pubsub.shakespeare.lit')
+                data.node.should.equal('twelfth night')
+                data.subscription.should.equal('subscribed')
+                data.jid.should.eql({
+                    domain: 'example.com', 
+                    user: 'romeo'
+                })
+                done()
+            })
+            pubsub.handle(stanza)
+        })
+
+        it('Passes on affiliation change', function(done) {
+            var stanza = new ltx.parse(
+                '<message from="pubsub.shakespeare.lit">'
+                + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                + '<affiliations node="twelfth night">'
+                    + '<affiliation affiliation="publisher" '
+                                 + 'jid="romeo@example.com" />'
+                + '</affiliations>'
+                + '</event></message>'
+            )
+            socket.once('xmpp.pubsub.push.affiliation', function(data) {
+                data.from.should.equal('pubsub.shakespeare.lit')
+                data.node.should.equal('twelfth night')
+                data.affiliation.should.equal('publisher')
+                data.jid.should.eql({
+                    domain: 'example.com',
+                    user: 'romeo'
+                })
+                done()
+            })
+            pubsub.handle(stanza)
+        })
+
+        it('Handles configuration changes', function(done) {
+            var stanza = new ltx.parse(
+                '<message from="pubsub.shakespeare.lit">'
+                + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                + '<configuration node="twelfth night">'
+                + '<x xmlns="jabber:x:data" type="result">'
+                    + '<field var="FORM_TYPE" type="hidden">'
+                    + '<value>'
+                        + 'http://jabber.org/protocol/pubsub#node_config'
+                        + '</value>'
+                    + '</field>'
+                    + '<field var="pubsub#title">'
+                        + '<value>A great comedy</value>'
+                    + '</field>'
+                + '</x>'
+                + '</configuration></event></message>'
+            )
+            socket.once('xmpp.pubsub.push.configuration', function(data) {
+                data.from.should.equal('pubsub.shakespeare.lit')
+                data.node.should.equal('twelfth night')
+                data.configuration.should.exist
+                data.configuration.fields.length.should.equal(1)
+                data.configuration.fields[0].var.should.equal('pubsub#title')
+                data.configuration.fields[0].value
+                    .should.equal('A great comedy')
+                done()
+            })
+            pubsub.handle(stanza)
+        })
+
+        describe('Node delete', function() {
+        
+            it('Can handle basic node delete', function(done) {
+                var stanza = new ltx.parse(
+                    '<message from="pubsub.shakespeare.lit">'
+                    + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                    + '<delete node="twelfth night"/>'
+                    + '</event></message>'
+                )
+                socket.once('xmpp.pubsub.push.delete', function(data) {
+                    data.from.should.equal('pubsub.shakespeare.lit')
+                    data.node.should.equal('twelfth night')
+                    done()
+                })
+                pubsub.handle(stanza)
+            })
+
+            it('Can handle node delete with redirect', function(done) {
+                var stanza = new ltx.parse(
+                    '<message from="pubsub.shakespeare.lit">'
+                    + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                    + '<delete node="twelfth night">'
+                    + '<redirect uri="pubsub.marlowe.lit?node=dido" />'
+                    + '</delete></event></message>'
+                )
+                socket.once('xmpp.pubsub.push.delete', function(data) {
+                    data.from.should.equal('pubsub.shakespeare.lit')
+                    data.node.should.equal('twelfth night')
+                    data.redirect.should.equal('pubsub.marlowe.lit?node=dido')
+                    done()
+                })
+                pubsub.handle(stanza)
+            })
+        
+        })
+
+        it('Node purge notification', function(done) {
+            var stanza = new ltx.parse(
+                '<message from="pubsub.shakespeare.lit">'
+                + '<event xmlns="' + pubsub.NS_EVENT + '">'
+                + '<purge node="twelfth night"/>'
+                + '</event></message>'
+            )
+            socket.once('xmpp.pubsub.push.purge', function(data) {
+                data.from.should.equal('pubsub.shakespeare.lit')
+                data.node.should.equal('twelfth night')
+                done()
+            })
+            pubsub.handle(stanza)
+        }) 
+
     })
 
 })
