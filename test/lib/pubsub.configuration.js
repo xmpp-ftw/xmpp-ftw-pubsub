@@ -24,4 +24,38 @@ describe('Publish-Subscribe', function() {
         pubsub.init(manager)
     })
 
+    describe('Get configuration', function() {
+
+        it('Errors if missing \'to\' key', function(done) {
+            done('Not implemented yet')
+        })
+
+        it('Errors if \'node\' key missing', function(done) {
+
+            done('Not implemented yet')
+        })
+
+        it('Sends expected stanza', function(done) {
+
+             done('Not implemented yet')
+
+        })
+
+        it('Handles error response stanza', function(done) {
+
+            done('Not implemented yet')
+        })
+
+        it('Returns configuration data', function(done) {
+            done('Not implemented yet')
+        })   
+
+    })
+
+    describe('Set configuration', function() {
+
+ 
+
+    })
+
 })
