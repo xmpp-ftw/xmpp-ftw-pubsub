@@ -137,9 +137,34 @@ describe('Publish-Subscribe', function() {
 
     describe('Set configuration', function() {
 
+       it('Errors if missing \'to\' key', function(done) {
+           done('Not implemented yet')
+       })
 
+       it('Errors if missing \'node\' key', function(done) {
+           done('Not implemented yet')
+       })
+
+       it('Errors if missing \'form\' key', function(done) {
+           done('Not implemented yet')
+       })
+
+       it('Errors if unparsable data form provided', function(done) {
+           done('Not implemented yet')
+       })
+
+       it('Sends expected stanza', function(done) {
+           done('Not implemented yet')
+       })
+
+       it('Handles error response stanza', function(done) {
+           done('Not implemented yet')
+       })
+
+       it('Returns true on success', function(done) {
+           done('Not implemented yet')
+       })
  
-
     })
 
 })
