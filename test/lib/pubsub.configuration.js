@@ -137,32 +137,157 @@ describe('Publish-Subscribe', function() {
 
     describe('Set configuration', function() {
 
+       beforeEach(function() {
+           xmpp.removeAllListeners('stanza')
+       })
+
        it('Errors if missing \'to\' key', function(done) {
-           done('Not implemented yet')
+            var request = {}
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'to' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.config.set', request, callback)
+
        })
 
        it('Errors if missing \'node\' key', function(done) {
-           done('Not implemented yet')
+            var request = {
+                to: 'pubsub.shakespeare.lit'
+            }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'node' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.config.set', request, callback)
+
        })
 
        it('Errors if missing \'form\' key', function(done) {
-           done('Not implemented yet')
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'form' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.config.set', request, callback)
        })
 
        it('Errors if unparsable data form provided', function(done) {
-           done('Not implemented yet')
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                form: true
+            }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal('Badly formatted data form')
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.config.set', request, callback)
        })
 
        it('Sends expected stanza', function(done) {
-           done('Not implemented yet')
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                form: [
+                    { var: 'pubsub#title', value: 'A great comedy' }
+                ]
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.id.should.exist
+                stanza.attrs.type.should.equal('set')
+                var configure = stanza.getChild('pubsub', pubsub.NS_OWNER)
+                    .getChild('configure')
+                configure.should.exist
+                configure.attrs.node.should.equal(request.node)
+                var form = configure.getChild('x', 'jabber:x:data')
+                form.should.exist
+                form.attrs.type.should.equal('submit')
+                form.children.length.should.equal(2)
+                form.children[0].attrs.var.should.equal('FORM_TYPE')
+                form.children[0].attrs.type.should.equal('hidden')
+                form.children[0].getChildText('value')
+                    .should.equal(pubsub.NS_CONFIG)
+                form.children[1].attrs.var.should.equal('pubsub#title')
+                form.children[1].getChildText('value')
+                    .should.equal('A great comedy')
+                done()
+            })
+            socket.emit('xmpp.pubsub.config.set', request, function() {})
        })
 
        it('Handles error response stanza', function(done) {
-           done('Not implemented yet')
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                form: []
+            }
+            socket.emit('xmpp.pubsub.config.set', request, callback)
        })
 
        it('Returns true on success', function(done) {
-           done('Not implemented yet')
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-result'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.should.be.true
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                form: []
+            }
+            socket.emit('xmpp.pubsub.config.set', request, callback)
        })
  
     })
