@@ -467,6 +467,127 @@ describe('Publish-Subscribe', function() {
 
     describe('Deleting node items', function() {
 
+        it('Errors if no \'to\' key provided', function(done) {
+            var request = {}
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'to' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.item.delete', request, callback)
+        })
+
+        it('Errors if no \'node\' key provided', function(done) {
+            var request = { to: 'pubsub.shakespeare.lit' }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'node' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.item.delete', request, callback)
+        })
+
+        it('Errors if missing item id', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing 'id' key")
+                error.request.should.eql(request)
+                xmpp.removeAllListeners('stanza')
+                done()
+            }
+            socket.emit('xmpp.pubsub.item.delete', request, callback)
+        })
+
+        it('Sends expected stanza', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                id: 'item-1'
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.is('iq').should.be.true
+                stanza.attrs.to.should.equal(request.to)
+                stanza.attrs.type.should.equal('set')
+                var retract = stanza.getChild('pubsub', pubsub.NS_PUBSUB)
+                    .getChild('retract')
+                retract.should.exist
+                retract.attrs.node.should.equal(request.node)
+                retract.children.length.should.equal(1)
+                retract.getChild('item').attrs.id.should.equal(request.id)
+                done()
+            })
+            socket.emit('xmpp.pubsub.item.delete', request, function() {})
+
+        })
+
+        it('Handles error stanza', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition'
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                id: 'item-1'
+            }
+            socket.emit(
+                'xmpp.pubsub.item.delete',
+                request,
+                callback
+            )
+        })
+
+        it('Returns true for successful response', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('iq-result'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(error)
+                success.should.be.true
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                id: 'item-1'
+            }
+            socket.emit(
+                'xmpp.pubsub.item.delete',
+                request,
+                callback
+            )
+        })
+
     })
 
     describe('Purging a node', function() {
