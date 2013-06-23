@@ -1,0 +1,21 @@
+<message to='juliet@example.net' from='pubsub.shakespeare.lit' id='1'>
+  <x xmlns='jabber:x:data' type='form'>
+    <title>Subscription request</title>
+    <instructions>Ok or cancel</instructions>
+    <field var='FORM_TYPE' type='hidden'>
+      <value>http://jabber.org/protocol/pubsub#subscribe_authorization</value>
+    </field>
+    <field var='pubsub#node' type='text-single' label='Node'>
+      <value>twelfth night</value>
+    </field>
+    <field var='pubsub#subscriber_jid' 
+           type='jid-single' 
+           label='Subscriber Address'>
+      <value>romeo@example.com</value>
+    </field>
+    <field var='pubsub#allow' type='boolean'
+           label='Allow?'>
+      <value>false</value>
+    </field>
+  </x>
+</message>
