@@ -3,6 +3,8 @@ var should  = require('should')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
+var RSM_NS = require('xmpp-ftw/lib/utils/xep-0059').NS
+
 describe('Publish-Subscribe', function() {
 
     var pubsub, socket, xmpp, manager
@@ -69,7 +71,7 @@ describe('Publish-Subscribe', function() {
 
         })
 
-        it('Errors if no message key', function(done) {
+        it('Errors if no \'content\' key', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
@@ -415,6 +417,24 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.retrieve', request, function() {})
         })         
+
+        it('Sends expected stanza when RSM applied', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                rsm: {
+                    max: '30',
+                    after: 'item-12345'
+                }
+            }
+            xmpp.once('stanza', function(stanza) {
+                var rsm = stanza.getChild('pubsub').getChild('set', RSM_NS)
+                rsm.getChildText('max').should.equal(request.rsm.max)
+                rsm.getChildText('after').should.equal(request.rsm.after)
+                done()
+            })
+            socket.emit('xmpp.pubsub.retrieve', request, function() {})
+        })
  
         it('Handles error response stanza', function(done) {
             xmpp.once('stanza', function(stanza) {
