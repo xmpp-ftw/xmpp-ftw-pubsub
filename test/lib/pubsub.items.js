@@ -483,6 +483,29 @@ describe('Publish-Subscribe', function() {
             )
         })
 
+        it('Returns RSM argument if it is provided', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('items-get-rsm'))
+            })
+            var callback = function(error, success, rsm) {
+                should.not.exist(error)
+                rsm.should.eql({
+                    count: 20,
+                    first: 'item-1',
+                    last: 'item-10'
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.retrieve',
+                request,
+                callback
+            )
+        })
     })
 
     describe('Deleting node items', function() {
