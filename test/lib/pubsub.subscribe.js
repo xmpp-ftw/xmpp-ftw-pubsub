@@ -27,6 +27,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Subscribe', function() {
 
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscribe', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscribe', {}, true)
+        })
+
         it('Errors if no \'to\' key provided', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -78,7 +108,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscribe', request)
+            socket.emit('xmpp.pubsub.subscribe', request, function() {})
         })
 
         it('Handles an error stanza response', function(done) {
@@ -168,6 +198,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Unsubscribe', function() {
 
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.unsubscribe', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.unsubscribe', {}, true)
+        })
+
         it('Errors if no \'to\' key provided', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -219,7 +279,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.unsubscribe', request)
+            socket.emit('xmpp.pubsub.unsubscribe', request, function() {})
         })
 
         it('Sends expected stanza when \'subscription id\'', function(done) {
@@ -234,7 +294,7 @@ describe('Publish-Subscribe', function() {
                     .attrs.subid.should.equal('123456')
                 done()
             })
-            socket.emit('xmpp.pubsub.unsubscribe', request)
+            socket.emit('xmpp.pubsub.unsubscribe', request, function() {})
         })
 
         it('Handles an error stanza response', function(done) {
@@ -283,6 +343,36 @@ describe('Publish-Subscribe', function() {
     })
 
     describe('Get node subscriptions', function() {
+
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscriptions', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscriptions', {}, true)
+        })
 
         it('Errors if missing \'to\' key', function(done) {
             var request = {}
@@ -336,7 +426,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request)
+            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
         })
 
         it('Sends expected stanza for user subscriptions', function(done) {
@@ -356,7 +446,7 @@ describe('Publish-Subscribe', function() {
                 )
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request)
+            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
         })
 
         it('Correct stanza for user subscriptions to node', function(done) {
@@ -376,7 +466,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request)
+            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
         }) 
 
         it('Handles error stanza response', function(done) {
@@ -434,7 +524,7 @@ describe('Publish-Subscribe', function() {
                 'xmpp.pubsub.subscriptions',
                 request,
                 callback
-		)
+            )
         })
 
     })
@@ -442,7 +532,37 @@ describe('Publish-Subscribe', function() {
     describe('Subscription configuration', function() {
 
         describe('Default configuration', function() {
- 
+
+             it('Errors when no callback provided', function(done) {
+                 xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                socket.once('xmpp.error.client', function(error) {
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing callback")
+                    error.request.should.eql({})
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                })
+                socket.emit('xmpp.pubsub.subsciption.config.default', {})
+            })
+
+            it('Errors when non-function callback provided', function(done) {
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                socket.once('xmpp.error.client', function(error) {
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing callback")
+                    error.request.should.eql({})
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                })
+                socket.emit('xmpp.pubsub.subscription.config.default', {}, true)
+            })
+
             it('Errors when no \'to\' key provided', function(done) {
                 var request = {}
                 xmpp.once('stanza', function() {
@@ -480,7 +600,7 @@ describe('Publish-Subscribe', function() {
                 socket.emit(
                     'xmpp.pubsub.subscription.config.default',
                     request,
-                    function(){}
+                    function() {}
                 )
             })
  
@@ -503,7 +623,7 @@ describe('Publish-Subscribe', function() {
                 socket.emit(
                     'xmpp.pubsub.subscription.config.default',
                     request,
-                    function(){}
+                    function() {}
                 )
             })
 
@@ -559,6 +679,36 @@ describe('Publish-Subscribe', function() {
         })
 
         describe('Get configuration', function() {
+
+             it('Errors when no callback provided', function(done) {
+                 xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })  
+               socket.once('xmpp.error.client', function(error) {
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing callback")
+                    error.request.should.eql({})
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                })  
+                socket.emit('xmpp.pubsub.subscription.config.get', {})
+            })  
+                
+            it('Errors when non-function callback provided', function(done) {
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                socket.once('xmpp.error.client', function(error) {
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing callback")
+                    error.request.should.eql({})
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                })
+                socket.emit('xmpp.pubsub.subscription.config.get', {}, true)
+            })
 
             it('Errors when no \'to\' key provided', function(done) {
                 var request = {}
@@ -621,7 +771,7 @@ describe('Publish-Subscribe', function() {
                 socket.emit(
                     'xmpp.pubsub.subscription.config.get',
                     request,
-                    function(){}
+                    function() {}
                 )
             })
 
@@ -678,6 +828,36 @@ describe('Publish-Subscribe', function() {
         })
 
         describe('Set configuration', function() {
+
+             it('Errors when no callback provided', function(done) {
+                 xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })  
+               socket.once('xmpp.error.client', function(error) {
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing callback")
+                    error.request.should.eql({})
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                })  
+                socket.emit('xmpp.pubsub.subscription.config.set', {})
+            })  
+                
+            it('Errors when non-function callback provided', function(done) {
+                xmpp.once('stanza', function() {
+                    done('Unexpected outgoing stanza')
+                })
+                socket.once('xmpp.error.client', function(error) {
+                    error.type.should.equal('modify')
+                    error.condition.should.equal('client-error')
+                    error.description.should.equal("Missing callback")
+                    error.request.should.eql({})
+                    xmpp.removeAllListeners('stanza')
+                    done()
+                })
+                socket.emit('xmpp.pubsub.subscription.config.set', {}, true)
+            })
 
             it('Errors when no \'to\' key provided', function(done) {
                 var request = {}

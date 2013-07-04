@@ -28,6 +28,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Publishing items', function() {
 
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.publish', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.publish', {}, true)
+        })
+
         it('Errors if \'to\' key missing', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -308,6 +338,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Retrieving node items', function() {
 
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.unsubscribe', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.unsubscribe', {}, true)
+        })
+
         it('Errors when no \'to\' key', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -510,6 +570,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Deleting node items', function() {
 
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.item.delete', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.item.delete', {}, true)
+        })
+
         it('Errors if no \'to\' key provided', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -635,6 +725,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Purging a node', function() {
 
+         it('Errors when no callback provided', function(done) {
+             xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.purge', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.purge', {}, true)
+        })
+
         it('Errors if missing \'to\' key', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -723,4 +843,5 @@ describe('Publish-Subscribe', function() {
         })
 
     })
+
 })

@@ -211,7 +211,6 @@ describe('Publish-Subscribe', function() {
                     done()
                 })
                 pubsub.handle(stanza)
-
             })
  
             it('Handles delete with headers', function(done) {

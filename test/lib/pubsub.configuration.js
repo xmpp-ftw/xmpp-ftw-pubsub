@@ -26,6 +26,36 @@ describe('Publish-Subscribe', function() {
 
     describe('Get configuration', function() {
 
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.config.get', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.config.get', {}, true)
+        })
+ 
         it('Errors if missing \'to\' key', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -137,11 +167,41 @@ describe('Publish-Subscribe', function() {
 
     describe('Set configuration', function() {
 
-       beforeEach(function() {
-           xmpp.removeAllListeners('stanza')
-       })
+        beforeEach(function() {
+            xmpp.removeAllListeners('stanza')
+        })
 
-       it('Errors if missing \'to\' key', function(done) {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+            socket.emit('xmpp.pubsub.config.set', {})
+        })
+
+        it('Errors when non-function callback provided', function(done) {
+            xmpp.once('stanza', function() {
+                done('Unexpected outgoing stanza')
+            })
+            socket.once('xmpp.error.client', function(error) {
+                error.type.should.equal('modify')
+                error.condition.should.equal('client-error')
+                error.description.should.equal("Missing callback")
+                error.request.should.eql({})
+                xmpp.removeAllListeners('stanza')
+                done()
+            })
+           socket.emit('xmpp.pubsub.config.set', {}, true)
+        })
+
+        it('Errors if missing \'to\' key', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
@@ -157,9 +217,9 @@ describe('Publish-Subscribe', function() {
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
 
-       })
+        })
 
-       it('Errors if missing \'node\' key', function(done) {
+        it('Errors if missing \'node\' key', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit'
             }
@@ -177,9 +237,9 @@ describe('Publish-Subscribe', function() {
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
 
-       })
+        })
 
-       it('Errors if missing \'form\' key', function(done) {
+        it('Errors if missing \'form\' key', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
@@ -197,9 +257,9 @@ describe('Publish-Subscribe', function() {
                 done()
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
-       })
+        })
 
-       it('Errors if unparsable data form provided', function(done) {
+        it('Errors if unparsable data form provided', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night',
@@ -218,9 +278,9 @@ describe('Publish-Subscribe', function() {
                 done()
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
-       })
+        })
 
-       it('Sends expected stanza', function(done) {
+        it('Sends expected stanza', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night',
@@ -251,9 +311,9 @@ describe('Publish-Subscribe', function() {
                 done()
             })
             socket.emit('xmpp.pubsub.config.set', request, function() {})
-       })
+        })
 
-       it('Handles error response stanza', function(done) {
+        it('Handles error response stanza', function(done) {
             xmpp.once('stanza', function(stanza) {
                 manager.makeCallback(helper.getStanza('iq-error'))
             })
@@ -271,9 +331,9 @@ describe('Publish-Subscribe', function() {
                 form: []
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
-       })
+        })
 
-       it('Returns true on success', function(done) {
+        it('Returns true on success', function(done) {
             xmpp.once('stanza', function(stanza) {
                 manager.makeCallback(helper.getStanza('iq-result'))
             })
@@ -288,7 +348,7 @@ describe('Publish-Subscribe', function() {
                 form: []
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
-       })
+        })
  
     })
 
