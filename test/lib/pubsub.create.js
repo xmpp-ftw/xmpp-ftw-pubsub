@@ -297,7 +297,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.delete', request)
+            socket.emit('xmpp.pubsub.delete', request, function() {})
         })
 
         it('Sends redirect element if requested', function(done) {
@@ -314,7 +314,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.redirect)
                 done()
             })
-            socket.emit('xmpp.pubsub.delete', request)
+            socket.emit('xmpp.pubsub.delete', request, function() {})
         })
 
         it('Handles an error stanza response', function(done) {
