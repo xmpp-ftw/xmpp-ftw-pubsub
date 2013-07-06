@@ -29,7 +29,7 @@ describe('Publish-Subscribe', function() {
     describe('Publishing items', function() {
 
          it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {
