@@ -545,7 +545,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subsciption.config.default', {})
+                socket.emit('xmpp.pubsub.subscription.config.default', {})
             })
 
             it('Errors when non-function callback provided', function(done) {
