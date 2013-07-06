@@ -108,7 +108,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request)
+            socket.emit('xmpp.pubsub.affiliations', request, function() {})
         })
 
         it('Sends expected stanza for user affiliations', function(done) {
@@ -128,7 +128,7 @@ describe('Publish-Subscribe', function() {
                 )
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request)
+            socket.emit('xmpp.pubsub.affiliations', request, function() {})
         })
 
         it('Correct stanza for user affiliations to node', function(done) {
@@ -148,7 +148,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request)
+            socket.emit('xmpp.pubsub.affiliations', request, function() {})
         }) 
 
         it('Handles error stanza response', function(done) {
@@ -201,7 +201,7 @@ describe('Publish-Subscribe', function() {
                 'xmpp.pubsub.affiliations',
                 request,
                 callback
-		)
+            )
         })
 
     })
