@@ -3,6 +3,8 @@ var should  = require('should')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
+var RSM_NS = require('xmpp-ftw/lib/utils/xep-0059').NS
+
 describe('Publish-Subscribe', function() {
 
     var pubsub, socket, xmpp, manager
@@ -514,6 +516,49 @@ describe('Publish-Subscribe', function() {
                 })
                 data[1].subscription.should.equal('subscribed')
                 data[1].id.should.equal('1')
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.emit(
+                'xmpp.pubsub.subscriptions',
+                request,
+                callback
+            )
+        })
+        
+        it('Adds RSM to outgoing stanza', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                rsm: {
+                    max: '20',
+                    before: 'item-123'
+                }
+            }
+            xmpp.once('stanza', function(stanza) {
+                var rsm = stanza.getChild('pubsub').getChild('set', RSM_NS)
+                rsm.getChildText('max').should.equal(request.rsm.max)
+                rsm.getChildText('before').should.equal(request.rsm.before)
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
+        })
+        
+        it('Adds RSM to results', function(done) {
+            xmpp.once('stanza', function(stanza) {
+                manager.makeCallback(helper.getStanza('subscriptions-with-rsm'))
+            })
+            var callback = function(error, data, rsm) {
+                should.not.exist(error)
+                should.exist(data)
+                rsm.should.eql({
+                    count: 20,
+                    first: 'item-1',
+                    last: 'item-10'
+                })
                 done()
             }
             var request = {

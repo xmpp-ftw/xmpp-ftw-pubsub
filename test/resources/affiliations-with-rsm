@@ -1,0 +1,18 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='juliet@example.net/balcony'
+    id='1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <affiliations>
+      <affiliation node='twelfth night' affiliation='owner' />
+      <affiliation node='a comedy of errors' 
+                   affiliation='publisher'
+                   jid='romeo@example.com' />
+    </affiliations>
+    <set xmlns='http://jabber.org/protocol/rsm'>
+      <first>item-1</first>
+      <last>item-10</last>
+      <count>20</count>
+    </set>
+  </pubsub>
+</iq>
