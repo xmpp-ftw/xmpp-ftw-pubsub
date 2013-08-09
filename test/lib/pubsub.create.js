@@ -176,7 +176,7 @@ describe('Publish-Subscribe', function() {
         it('Allows advanced node creation', function(done) {
             xmpp.once('stanza', function(stanza) {
                 var create = stanza.getChild('pubsub').getChild('create')
-                var dataForm =stanza.getChild('pubsub')
+                var dataForm = stanza.getChild('pubsub')
                     .getChild('configure')
                     .getChild('x', 'jabber:x:data')
                 dataForm.should.exist
