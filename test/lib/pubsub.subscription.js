@@ -3,8 +3,6 @@ var should  = require('should')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
-var RSM_NS = require('xmpp-ftw/lib/utils/xep-0059').NS
-
 describe('Publish-Subscribe', function() {
 
     var pubsub, socket, xmpp, manager
