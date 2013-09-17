@@ -476,6 +476,20 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.retrieve', request, function() {})
         })
+
+        it('Sends expected stanza with \'max_items\'', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                maxItems: 3
+            }
+            xmpp.once('stanza', function(stanza) {
+                stanza.getChild('pubsub', pubsub.NS_PUBSUB)
+                    .getChild('items').attrs.max_items.should.equal(request.maxItems)
+                done()
+            })
+            socket.emit('xmpp.pubsub.retrieve', request, function() {})
+        })
         
         it('Sends expected stanza when RSM applied', function(done) {
             var request = {
