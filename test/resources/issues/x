@@ -1,0 +1,1 @@
+<message type="headline" to="test@example.com" from="pubsub.example.com" xmlns:stream="http://etherx.jabber.org/streams"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="message-wall-updates"><item id="38cbf9ff-fe86-47ce-a843-9777a6601c7a"><body xmlns="http://jabber.org/protocol/pubsub">Hello world!</body></item></items></event></message>
