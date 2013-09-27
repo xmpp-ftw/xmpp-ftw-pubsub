@@ -18,7 +18,15 @@ describe('Publish-Subscribe', function() {
             },
             makeCallback: function(error, data) {
                 this.callback(error, data)
-            }
+            },
+            _getLogger: function() {
+                return {
+                    log: function() {},
+                    error: function() {},
+                    warn: function() {},
+                    info: function() {}
+                }
+            } 
         }
         pubsub = new PubSub()
         pubsub.init(manager)
