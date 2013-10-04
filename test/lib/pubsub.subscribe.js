@@ -108,6 +108,23 @@ describe('Publish-Subscribe', function() {
                 pubsubElement.getChild('subscribe').should.exist
                 pubsubElement.getChild('subscribe').attrs.node
                     .should.equal(request.node)
+                pubsubElement.getChild('subscribe').attrs.jid
+                    .should.equal(manager.jid)
+                done()
+            })
+            socket.emit('xmpp.pubsub.subscribe', request, function() {})
+        })
+        
+        it('Sends expected stanza with jid', function(done) {
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: manager.jid + '/resource'
+            }
+            xmpp.once('stanza', function(stanza) {
+                var pubsubElement = stanza.getChild('pubsub')
+                pubsubElement.getChild('subscribe').attrs.jid
+                    .should.equal(request.jid)
                 done()
             })
             socket.emit('xmpp.pubsub.subscribe', request, function() {})
