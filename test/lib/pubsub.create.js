@@ -1,5 +1,5 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 

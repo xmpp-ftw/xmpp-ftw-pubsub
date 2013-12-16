@@ -1,8 +1,8 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , helper  = require('../helper')
 
-var RSM_NS = require('xmpp-ftw/lib/utils/xep-0059').NS
+var RSM_NS = require('xmpp-ftw').utils['xep-0059'].NS
 
 describe('Publish-Subscribe', function() {
 
@@ -27,7 +27,7 @@ describe('Publish-Subscribe', function() {
                     warn: function() {},
                     info: function() {}
                 }
-            }  
+            }
         }
         pubsub = new PubSub()
         pubsub.init(manager)
@@ -85,7 +85,7 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
- 
+
         it('Errors if \'node\' key missing', function(done) {
             var request = { to: 'pubsub.shakespeare.lit' }
             xmpp.once('stanza', function() {
@@ -131,7 +131,7 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
- 
+
         it('Errors if empty message content', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
@@ -177,7 +177,7 @@ describe('Publish-Subscribe', function() {
                 pubsub.setItemParser()
                 done()
             }
-             
+
             pubsub.setItemParser(helper.failingItemParser)
             socket.emit(
                 'xmpp.pubsub.publish',
@@ -498,7 +498,7 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.retrieve', request, function() {})
         })
-        
+
         it('Sends expected stanza when RSM applied', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
@@ -516,7 +516,7 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.retrieve', request, function() {})
         })
- 
+
         it('Handles error response stanza', function(done) {
             xmpp.once('stanza', function() {
                 manager.makeCallback(helper.getStanza('iq-error'))

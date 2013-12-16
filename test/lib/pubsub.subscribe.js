@@ -1,9 +1,9 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
-var RSM_NS = require('xmpp-ftw/lib/utils/xep-0059').NS
+var RSM_NS = require('xmpp-ftw').utils['xep-0059'].NS
 
 describe('Publish-Subscribe', function() {
 
@@ -114,7 +114,7 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.subscribe', request, function() {})
         })
-        
+
         it('Sends expected stanza with jid', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
@@ -191,7 +191,7 @@ describe('Publish-Subscribe', function() {
                 request,
                 callback
             )
-        }) 
+        })
 
         it('Handles configuration required', function(done) {
             xmpp.once('stanza', function(stanza) {
@@ -424,7 +424,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscriptions', request, callback)        
+            socket.emit('xmpp.pubsub.subscriptions', request, callback)
         })
 
         it('Sends expected stanza for node owner', function(done) {
@@ -486,7 +486,7 @@ describe('Publish-Subscribe', function() {
                 done()
             })
             socket.emit('xmpp.pubsub.subscriptions', request, function() {})
-        }) 
+        })
 
         it('Handles error stanza response', function(done) {
             xmpp.once('stanza', function(stanza) {
@@ -545,7 +545,7 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
-        
+
         it('Adds RSM to outgoing stanza', function(done) {
             var request = {
                 to: 'pubsub.shakespeare.lit',
@@ -563,7 +563,7 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.subscriptions', request, function() {})
         })
-        
+
         it('Adds RSM to results', function(done) {
             xmpp.once('stanza', function(stanza) {
                 manager.makeCallback(helper.getStanza('subscriptions-with-rsm'))
@@ -665,9 +665,9 @@ describe('Publish-Subscribe', function() {
                     function() {}
                 )
             })
- 
+
             it('Sends expected stanza with node', function(done) {
-                var request = { 
+                var request = {
                     to: 'pubsub.shakespeare.lit',
                     node: 'twelfth night'
                 }
@@ -711,7 +711,7 @@ describe('Publish-Subscribe', function() {
                     callback
                 )
             })
-   
+
             it('Returns data from successful request', function(done) {
                 xmpp.once('stanza', function(stanza) {
                     manager.makeCallback(
@@ -745,7 +745,7 @@ describe('Publish-Subscribe', function() {
              it('Errors when no callback provided', function(done) {
                  xmpp.once('stanza', function() {
                     done('Unexpected outgoing stanza')
-                })  
+                })
                socket.once('xmpp.error.client', function(error) {
                     error.type.should.equal('modify')
                     error.condition.should.equal('client-error')
@@ -753,10 +753,10 @@ describe('Publish-Subscribe', function() {
                     error.request.should.eql({})
                     xmpp.removeAllListeners('stanza')
                     done()
-                })  
+                })
                 socket.emit('xmpp.pubsub.subscription.config.get', {})
-            })  
-                
+            })
+
             it('Errors when non-function callback provided', function(done) {
                 xmpp.once('stanza', function() {
                     done('Unexpected outgoing stanza')
@@ -792,7 +792,7 @@ describe('Publish-Subscribe', function() {
                     callback
                 )
             })
- 
+
             it('Errors when no \'node\' key provided', function(done) {
                 var request = { to: 'pubsub.shakespeare.lit' }
                 xmpp.once('stanza', function() {
@@ -894,7 +894,7 @@ describe('Publish-Subscribe', function() {
              it('Errors when no callback provided', function(done) {
                  xmpp.once('stanza', function() {
                     done('Unexpected outgoing stanza')
-                })  
+                })
                socket.once('xmpp.error.client', function(error) {
                     error.type.should.equal('modify')
                     error.condition.should.equal('client-error')
@@ -902,10 +902,10 @@ describe('Publish-Subscribe', function() {
                     error.request.should.eql({})
                     xmpp.removeAllListeners('stanza')
                     done()
-                })  
+                })
                 socket.emit('xmpp.pubsub.subscription.config.set', {})
-            })  
-                
+            })
+
             it('Errors when non-function callback provided', function(done) {
                 xmpp.once('stanza', function() {
                     done('Unexpected outgoing stanza')
@@ -1011,7 +1011,7 @@ describe('Publish-Subscribe', function() {
                     callback
                 )
             })
- 
+
             it('Sends expected stanza', function(done) {
                 xmpp.once('stanza', function(stanza) {
                     stanza.is('iq').should.be.true
@@ -1052,7 +1052,7 @@ describe('Publish-Subscribe', function() {
                     function() {}
                 )
             })
-    
+
             it('Fills JID if not provided', function(done) {
                 xmpp.once('stanza', function(stanza) {
                     stanza.getChild('pubsub', pubsub.NS_PUBSUB)

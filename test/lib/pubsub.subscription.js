@@ -1,5 +1,5 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
@@ -92,7 +92,7 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Errors if no \'jid\' key provided', function(done) {
-            var request = { 
+            var request = {
               to: 'pubsub.shakespeare.lit',
               node: 'twelfth night'
             }
@@ -110,9 +110,9 @@ describe('Publish-Subscribe', function() {
             }
             socket.emit('xmpp.pubsub.subscription', request, callback)
         })
-        
+
         it('Errors if no \'subscription\' key provided', function(done) {
-            var request = { 
+            var request = {
               to: 'pubsub.shakespeare.lit',
               node: 'twelfth night',
               jid: 'juliet@shakespeare.lit'
@@ -131,9 +131,9 @@ describe('Publish-Subscribe', function() {
             }
             socket.emit('xmpp.pubsub.subscription', request, callback)
         })
-        
+
         it('Sends expected stanza', function(done) {
-            var request = { 
+            var request = {
               to: 'pubsub.shakespeare.lit',
               node: 'twelfth night',
               jid: 'juliet@shakespeare.lit',
@@ -149,7 +149,7 @@ describe('Publish-Subscribe', function() {
                     .getChild('subscriptions')
                 subscriptions.should.exist
                 subscriptions.attrs.node.should.equal(request.node)
-                
+
                 var subscription = subscriptions.getChild('subscription')
                 subscription.attrs.jid.should.equal(request.jid)
                 subscription.attrs.subscription
@@ -172,7 +172,7 @@ describe('Publish-Subscribe', function() {
                 })
                 done()
             }
-            var request = { 
+            var request = {
               to: 'pubsub.shakespeare.lit',
               node: 'twelfth night',
               jid: 'juliet@shakespeare.lit',
@@ -194,7 +194,7 @@ describe('Publish-Subscribe', function() {
                 success.should.be.true
                 done()
             }
-            var request = { 
+            var request = {
               to: 'pubsub.shakespeare.lit',
               node: 'twelfth night',
               jid: 'juliet@shakespeare.lit',
@@ -208,5 +208,5 @@ describe('Publish-Subscribe', function() {
         })
 
     })
-    
+
 })

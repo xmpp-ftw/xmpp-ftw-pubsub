@@ -1,5 +1,5 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
@@ -55,7 +55,7 @@ describe('Publish-Subscribe', function() {
             })
             socket.emit('xmpp.pubsub.config.get', {}, true)
         })
- 
+
         it('Errors if missing \'to\' key', function(done) {
             var request = {}
             xmpp.once('stanza', function() {
@@ -161,7 +161,7 @@ describe('Publish-Subscribe', function() {
                 node: 'twelfth night'
             }
             socket.emit('xmpp.pubsub.config.get', request, callback)
-        })   
+        })
 
     })
 
@@ -349,7 +349,7 @@ describe('Publish-Subscribe', function() {
             }
             socket.emit('xmpp.pubsub.config.set', request, callback)
         })
- 
+
     })
 
 })

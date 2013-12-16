@@ -1,9 +1,9 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
-var RSM_NS = require('xmpp-ftw/lib/utils/xep-0059').NS
+var RSM_NS = require('xmpp-ftw').utils['xep-0059'].NS
 
 describe('Publish-Subscribe', function() {
 
@@ -25,7 +25,7 @@ describe('Publish-Subscribe', function() {
         pubsub = new PubSub()
         pubsub.init(manager)
     })
- 
+
     describe('Get affiliations', function() {
 
         it('Errors when no callback provided', function(done) {
@@ -89,7 +89,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.affiliations', request, callback)        
+            socket.emit('xmpp.pubsub.affiliations', request, callback)
         })
 
         it('Sends expected stanza for node owner', function(done) {
@@ -151,7 +151,7 @@ describe('Publish-Subscribe', function() {
                 done()
             })
             socket.emit('xmpp.pubsub.affiliations', request, function() {})
-        }) 
+        })
 
         it('Adds RSM to outgoing stanza', function(done) {
             var request = {
@@ -222,7 +222,7 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
-        
+
         it('Adds RSM to results', function(done) {
             xmpp.once('stanza', function(stanza) {
                 manager.makeCallback(helper.getStanza('affiliations-with-rsm'))

@@ -1,5 +1,5 @@
 var should  = require('should')
-  , PubSub  = require('../../lib/pubsub')
+  , PubSub  = require('../../index')
   , ltx     = require('ltx')
   , helper  = require('../helper')
 
@@ -26,7 +26,7 @@ describe('Publish-Subscribe', function() {
                     warn: function() {},
                     info: function() {}
                 }
-            } 
+            }
         }
         pubsub = new PubSub()
         pubsub.init(manager)
@@ -43,7 +43,7 @@ describe('Publish-Subscribe', function() {
        })
 
        it('Handles messages with \'event\' namespace', function() {
-           var stanza = new ltx.parse('<message><event xmlns="' 
+           var stanza = new ltx.parse('<message><event xmlns="'
                + pubsub.NS_EVENT + '" /></message>')
            pubsub.handles(stanza).should.be.true
        })
@@ -107,7 +107,7 @@ describe('Publish-Subscribe', function() {
                 data.should.eql({ type: 'modify',
                     condition: 'client-error',
                     description: 'Badly formatted data form',
-                    request: {} 
+                    request: {}
                 })
                 done()
             })
@@ -132,12 +132,12 @@ describe('Publish-Subscribe', function() {
                 dataForm.children[1].attrs.var.should.equal('pubsub#allow')
                 dataForm.children[1].getChildText('value')
                     .should.equal('true')
-                done()            
+                done()
             })
             var callback = function(data, callback) {
                 callback([
                     { var: 'pubsub#allow', value: true }
-                ]) 
+                ])
             }
             socket.once('xmpp.pubsub.push.authorisation', callback)
             pubsub.handle(stanza)
@@ -220,7 +220,7 @@ describe('Publish-Subscribe', function() {
                 })
                 pubsub.handle(stanza)
             })
- 
+
             it('Handles delete with headers', function(done) {
                 var stanza = new ltx.parse(
                     '<message from="pubsub.shakespeare.lit">'
@@ -260,7 +260,7 @@ describe('Publish-Subscribe', function() {
                 data.node.should.equal('twelfth night')
                 data.subscription.should.equal('subscribed')
                 data.jid.should.eql({
-                    domain: 'example.com', 
+                    domain: 'example.com',
                     user: 'romeo'
                 })
                 done()
@@ -322,7 +322,7 @@ describe('Publish-Subscribe', function() {
         })
 
         describe('Node delete', function() {
-        
+
             it('Can handle basic node delete', function(done) {
                 var stanza = new ltx.parse(
                     '<message from="pubsub.shakespeare.lit">'
@@ -354,7 +354,7 @@ describe('Publish-Subscribe', function() {
                 })
                 pubsub.handle(stanza)
             })
-        
+
         })
 
         it('Node purge notification', function(done) {
@@ -370,7 +370,7 @@ describe('Publish-Subscribe', function() {
                 done()
             })
             pubsub.handle(stanza)
-        }) 
+        })
 
     })
 
