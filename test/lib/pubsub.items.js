@@ -1,3 +1,7 @@
+'use strict';
+
+/* jshint -W030 */
+
 var should  = require('should')
   , PubSub  = require('../../index')
   , helper  = require('../helper')
@@ -35,7 +39,7 @@ describe('Publish-Subscribe', function() {
 
     describe('Publishing items', function() {
 
-         it('Errors when no callback provided', function(done) {
+        it('Errors when no callback provided', function(done) {
             xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
@@ -345,8 +349,8 @@ describe('Publish-Subscribe', function() {
 
     describe('Retrieving node items', function() {
 
-         it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {
@@ -491,6 +495,7 @@ describe('Publish-Subscribe', function() {
                 node: 'twelfth night',
                 maxItems: 3
             }
+            /* jshint -W106 */
             xmpp.once('stanza', function(stanza) {
                 stanza.getChild('pubsub', pubsub.NS_PUBSUB)
                     .getChild('items').attrs.max_items.should.equal(request.maxItems)
@@ -591,8 +596,8 @@ describe('Publish-Subscribe', function() {
 
     describe('Deleting node items', function() {
 
-         it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {
@@ -746,8 +751,8 @@ describe('Publish-Subscribe', function() {
 
     describe('Purging a node', function() {
 
-         it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {

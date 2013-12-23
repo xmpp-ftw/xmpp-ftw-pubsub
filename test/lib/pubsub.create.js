@@ -1,6 +1,9 @@
+'use strict';
+
+/* jshint -W030 */
+
 var should  = require('should')
   , PubSub  = require('../../index')
-  , ltx     = require('ltx')
   , helper  = require('../helper')
 
 describe('Publish-Subscribe', function() {
@@ -32,14 +35,14 @@ describe('Publish-Subscribe', function() {
 
     describe('Node creation', function() {
 
-         it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing callback")
+                error.description.should.equal('Missing callback')
                 error.request.should.eql({})
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -54,7 +57,7 @@ describe('Publish-Subscribe', function() {
             socket.once('xmpp.error.client', function(error) {
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing callback")
+                error.description.should.equal('Missing callback')
                 error.request.should.eql({})
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -70,7 +73,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'to' key")
+                error.description.should.equal('Missing \'to\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -88,7 +91,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'node' key")
+                error.description.should.equal('Missing \'node\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -97,7 +100,7 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Handles an error stanza response', function(done) {
-            xmpp.once('stanza', function(stanza) {
+            xmpp.once('stanza', function() {
                 manager.makeCallback(helper.getStanza('iq-error'))
             })
             var callback = function(error, success) {
@@ -175,7 +178,7 @@ describe('Publish-Subscribe', function() {
 
         it('Allows advanced node creation', function(done) {
             xmpp.once('stanza', function(stanza) {
-                var create = stanza.getChild('pubsub').getChild('create')
+                stanza.getChild('pubsub').getChild('create').should.exist
                 var dataForm = stanza.getChild('pubsub')
                     .getChild('configure')
                     .getChild('x', 'jabber:x:data')
@@ -216,14 +219,14 @@ describe('Publish-Subscribe', function() {
 
     describe('Node deletion', function() {
 
-         it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing callback")
+                error.description.should.equal('Missing callback')
                 error.request.should.eql({})
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -238,7 +241,7 @@ describe('Publish-Subscribe', function() {
             socket.once('xmpp.error.client', function(error) {
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing callback")
+                error.description.should.equal('Missing callback')
                 error.request.should.eql({})
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -255,7 +258,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'to' key")
+                error.description.should.equal('Missing \'to\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -272,7 +275,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'node' key")
+                error.description.should.equal('Missing \'node\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -318,7 +321,7 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Handles an error stanza response', function(done) {
-            xmpp.once('stanza', function(stanza) {
+            xmpp.once('stanza', function() {
                 manager.makeCallback(helper.getStanza('iq-error'))
             })
             var callback = function(error, success) {
@@ -341,7 +344,7 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Successful response handled ok', function(done) {
-            xmpp.once('stanza', function(stanza) {
+            xmpp.once('stanza', function() {
                 manager.makeCallback(helper.getStanza('iq-result'))
             })
             var callback = function(error, success) {

@@ -1,6 +1,9 @@
+'use strict';
+
+/* jshint -W030 */
+
 var should  = require('should')
   , PubSub  = require('../../index')
-  , ltx     = require('ltx')
   , helper  = require('../helper')
 
 describe('Publish-Subscribe', function() {
@@ -27,14 +30,14 @@ describe('Publish-Subscribe', function() {
 
     describe('Subscription', function() {
 
-         it('Errors when no callback provided', function(done) {
-             xmpp.once('stanza', function() {
+        it('Errors when no callback provided', function(done) {
+            xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
             })
             socket.once('xmpp.error.client', function(error) {
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing callback")
+                error.description.should.equal('Missing callback')
                 error.request.should.eql({})
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -49,7 +52,7 @@ describe('Publish-Subscribe', function() {
             socket.once('xmpp.error.client', function(error) {
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing callback")
+                error.description.should.equal('Missing callback')
                 error.request.should.eql({})
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -66,7 +69,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'to' key")
+                error.description.should.equal('Missing \'to\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -83,7 +86,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'node' key")
+                error.description.should.equal('Missing \'node\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -93,8 +96,8 @@ describe('Publish-Subscribe', function() {
 
         it('Errors if no \'jid\' key provided', function(done) {
             var request = {
-              to: 'pubsub.shakespeare.lit',
-              node: 'twelfth night'
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
             }
             xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
@@ -103,7 +106,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'jid' key")
+                error.description.should.equal('Missing \'jid\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -113,9 +116,9 @@ describe('Publish-Subscribe', function() {
 
         it('Errors if no \'subscription\' key provided', function(done) {
             var request = {
-              to: 'pubsub.shakespeare.lit',
-              node: 'twelfth night',
-              jid: 'juliet@shakespeare.lit'
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'juliet@shakespeare.lit'
             }
             xmpp.once('stanza', function() {
                 done('Unexpected outgoing stanza')
@@ -124,7 +127,7 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.type.should.equal('modify')
                 error.condition.should.equal('client-error')
-                error.description.should.equal("Missing 'subscription' key")
+                error.description.should.equal('Missing \'subscription\' key')
                 error.request.should.eql(request)
                 xmpp.removeAllListeners('stanza')
                 done()
@@ -134,10 +137,10 @@ describe('Publish-Subscribe', function() {
 
         it('Sends expected stanza', function(done) {
             var request = {
-              to: 'pubsub.shakespeare.lit',
-              node: 'twelfth night',
-              jid: 'juliet@shakespeare.lit',
-              subscription: 'subscribed'
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'juliet@shakespeare.lit',
+                subscription: 'subscribed'
             }
             xmpp.once('stanza', function(stanza) {
                 stanza.is('iq').should.be.true
@@ -161,7 +164,7 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Handles an error stanza response', function(done) {
-            xmpp.once('stanza', function(stanza) {
+            xmpp.once('stanza', function() {
                 manager.makeCallback(helper.getStanza('iq-error'))
             })
             var callback = function(error, success) {
@@ -173,10 +176,10 @@ describe('Publish-Subscribe', function() {
                 done()
             }
             var request = {
-              to: 'pubsub.shakespeare.lit',
-              node: 'twelfth night',
-              jid: 'juliet@shakespeare.lit',
-              subscription: 'subscribed'
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'juliet@shakespeare.lit',
+                subscription: 'subscribed'
             }
             socket.emit(
                 'xmpp.pubsub.subscription',
@@ -186,7 +189,7 @@ describe('Publish-Subscribe', function() {
         })
 
         it('Handles basic success response', function(done) {
-            xmpp.once('stanza', function(stanza) {
+            xmpp.once('stanza', function() {
                 manager.makeCallback(helper.getStanza('subscribe-basic'))
             })
             var callback = function(error, success) {
@@ -195,10 +198,10 @@ describe('Publish-Subscribe', function() {
                 done()
             }
             var request = {
-              to: 'pubsub.shakespeare.lit',
-              node: 'twelfth night',
-              jid: 'juliet@shakespeare.lit',
-              subscription: 'subscribed'
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night',
+                jid: 'juliet@shakespeare.lit',
+                subscription: 'subscribed'
             }
             socket.emit(
                 'xmpp.pubsub.subscription',
