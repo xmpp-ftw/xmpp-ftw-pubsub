@@ -11,8 +11,8 @@ describe('Publish-Subscribe', function() {
     var pubsub, socket, xmpp, manager
 
     before(function() {
-        socket = new helper.Eventer()
-        xmpp = new helper.Eventer()
+        socket = new helper.SocketEventer()
+        xmpp = new helper.XmppEventer()
         manager = {
             socket: socket,
             client: xmpp,
@@ -24,6 +24,12 @@ describe('Publish-Subscribe', function() {
             }
         }
         pubsub = new PubSub()
+        pubsub.init(manager)
+    })
+
+    beforeEach(function() {
+        socket.removeAllListeners()
+        xmpp.removeAllListeners()
         pubsub.init(manager)
     })
 
@@ -41,7 +47,8 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.config.get', {})
+            console.log(socket, xmpp)
+            socket.send('xmpp.pubsub.config.get', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -56,7 +63,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.config.get', {}, true)
+            socket.send('xmpp.pubsub.config.get', {}, true)
         })
 
         it('Errors if missing \'to\' key', function(done) {
@@ -73,7 +80,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.config.get',
                 request,
                 callback
@@ -94,7 +101,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.config.get',
                 request,
                 callback
@@ -117,7 +124,7 @@ describe('Publish-Subscribe', function() {
                 configure.attrs.node.should.equal(request.node)
                 done()
             })
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.config.get',
                 request,
                 function() {}
@@ -140,7 +147,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit('xmpp.pubsub.config.get', request, callback)
+            socket.send('xmpp.pubsub.config.get', request, callback)
         })
 
         it('Returns configuration data', function(done) {
@@ -163,7 +170,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit('xmpp.pubsub.config.get', request, callback)
+            socket.send('xmpp.pubsub.config.get', request, callback)
         })
 
     })
@@ -186,7 +193,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.config.set', {})
+            socket.send('xmpp.pubsub.config.set', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -201,7 +208,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.config.set', {}, true)
+            socket.send('xmpp.pubsub.config.set', {}, true)
         })
 
         it('Errors if missing \'to\' key', function(done) {
@@ -218,7 +225,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.config.set', request, callback)
+            socket.send('xmpp.pubsub.config.set', request, callback)
 
         })
 
@@ -238,7 +245,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.config.set', request, callback)
+            socket.send('xmpp.pubsub.config.set', request, callback)
 
         })
 
@@ -259,7 +266,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.config.set', request, callback)
+            socket.send('xmpp.pubsub.config.set', request, callback)
         })
 
         it('Errors if unparsable data form provided', function(done) {
@@ -280,7 +287,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.config.set', request, callback)
+            socket.send('xmpp.pubsub.config.set', request, callback)
         })
 
         it('Sends expected stanza', function(done) {
@@ -313,7 +320,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal('A great comedy')
                 done()
             })
-            socket.emit('xmpp.pubsub.config.set', request, function() {})
+            socket.send('xmpp.pubsub.config.set', request, function() {})
         })
 
         it('Handles error response stanza', function(done) {
@@ -333,7 +340,7 @@ describe('Publish-Subscribe', function() {
                 node: 'twelfth night',
                 form: []
             }
-            socket.emit('xmpp.pubsub.config.set', request, callback)
+            socket.send('xmpp.pubsub.config.set', request, callback)
         })
 
         it('Returns true on success', function(done) {
@@ -350,7 +357,7 @@ describe('Publish-Subscribe', function() {
                 node: 'twelfth night',
                 form: []
             }
-            socket.emit('xmpp.pubsub.config.set', request, callback)
+            socket.send('xmpp.pubsub.config.set', request, callback)
         })
 
     })

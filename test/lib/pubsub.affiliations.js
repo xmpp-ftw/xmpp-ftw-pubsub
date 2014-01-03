@@ -13,8 +13,8 @@ describe('Publish-Subscribe', function() {
     var pubsub, socket, xmpp, manager
 
     before(function() {
-        socket = new helper.Eventer()
-        xmpp = new helper.Eventer()
+        socket = new helper.SocketEventer()
+        xmpp = new helper.XmppEventer()
         manager = {
             socket: socket,
             client: xmpp,
@@ -26,6 +26,12 @@ describe('Publish-Subscribe', function() {
             }
         }
         pubsub = new PubSub()
+        pubsub.init(manager)
+    })
+
+    beforeEach(function() {
+        socket.removeAllListeners()
+        xmpp.removeAllListeners()
         pubsub.init(manager)
     })
 
@@ -43,7 +49,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', {})
+            socket.send('xmpp.pubsub.affiliations', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -58,7 +64,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', {}, true)
+            socket.send('xmpp.pubsub.affiliations', {}, true)
         })
 
         it('Errors if missing \'to\' key', function(done) {
@@ -75,7 +81,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.affiliations', request, callback)
+            socket.send('xmpp.pubsub.affiliations', request, callback)
         })
 
         it('Errors if node subs requested and no owner', function(done) {
@@ -92,7 +98,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.affiliations', request, callback)
+            socket.send('xmpp.pubsub.affiliations', request, callback)
         })
 
         it('Sends expected stanza for node owner', function(done) {
@@ -113,7 +119,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request, function() {})
+            socket.send('xmpp.pubsub.affiliations', request, function() {})
         })
 
         it('Sends expected stanza for user affiliations', function(done) {
@@ -133,7 +139,7 @@ describe('Publish-Subscribe', function() {
                 )
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request, function() {})
+            socket.send('xmpp.pubsub.affiliations', request, function() {})
         })
 
         it('Correct stanza for user affiliations to node', function(done) {
@@ -153,7 +159,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request, function() {})
+            socket.send('xmpp.pubsub.affiliations', request, function() {})
         })
 
         it('Adds RSM to outgoing stanza', function(done) {
@@ -171,7 +177,7 @@ describe('Publish-Subscribe', function() {
                 rsm.getChildText('before').should.equal(request.rsm.before)
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliations', request, function() {})
+            socket.send('xmpp.pubsub.affiliations', request, function() {})
         })
 
         it('Handles error stanza response', function(done) {
@@ -190,7 +196,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliations',
                 request,
                 callback
@@ -219,7 +225,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliations',
                 request,
                 callback
@@ -244,7 +250,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliations',
                 request,
                 callback
@@ -267,7 +273,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliation', {})
+            socket.send('xmpp.pubsub.affiliation', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -282,7 +288,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.affiliation', {}, true)
+            socket.send('xmpp.pubsub.affiliation', {}, true)
         })
 
         it('Errors when missing \'to\' key', function(done) {
@@ -299,7 +305,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 callback
@@ -320,7 +326,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 callback
@@ -344,7 +350,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 callback
@@ -369,7 +375,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 callback
@@ -398,7 +404,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.affiliation)
                 done()
             })
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 function() {}
@@ -423,7 +429,7 @@ describe('Publish-Subscribe', function() {
                 jid: 'romeo@example.com',
                 affiliation: 'publisher'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 callback
@@ -445,7 +451,7 @@ describe('Publish-Subscribe', function() {
                 jid: 'romeo@example.com',
                 affiliation: 'publisher'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.affiliation',
                 request,
                 callback

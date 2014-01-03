@@ -11,8 +11,8 @@ describe('Publish-Subscribe', function() {
     var pubsub, socket, xmpp, manager
 
     before(function() {
-        socket = new helper.Eventer()
-        xmpp = new helper.Eventer()
+        socket = new helper.SocketEventer()
+        xmpp = new helper.XmppEventer()
         manager = {
             socket: socket,
             client: xmpp,
@@ -25,6 +25,12 @@ describe('Publish-Subscribe', function() {
             jid: 'juliet@example.net'
         }
         pubsub = new PubSub()
+        pubsub.init(manager)
+    })
+
+    beforeEach(function() {
+        socket.removeAllListeners()
+        xmpp.removeAllListeners()
         pubsub.init(manager)
     })
 
@@ -42,7 +48,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.subscription', {})
+            socket.send('xmpp.pubsub.subscription', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -57,7 +63,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.subscription', {}, true)
+            socket.send('xmpp.pubsub.subscription', {}, true)
         })
 
         it('Errors if no \'to\' key provided', function(done) {
@@ -74,7 +80,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscription', request, callback)
+            socket.send('xmpp.pubsub.subscription', request, callback)
         })
 
         it('Errors if no \'node\' key provided', function(done) {
@@ -91,7 +97,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscription', request, callback)
+            socket.send('xmpp.pubsub.subscription', request, callback)
         })
 
         it('Errors if no \'jid\' key provided', function(done) {
@@ -111,7 +117,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscription', request, callback)
+            socket.send('xmpp.pubsub.subscription', request, callback)
         })
 
         it('Errors if no \'subscription\' key provided', function(done) {
@@ -132,7 +138,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscription', request, callback)
+            socket.send('xmpp.pubsub.subscription', request, callback)
         })
 
         it('Sends expected stanza', function(done) {
@@ -160,7 +166,7 @@ describe('Publish-Subscribe', function() {
 
                 done()
             })
-            socket.emit('xmpp.pubsub.subscription', request, function() {})
+            socket.send('xmpp.pubsub.subscription', request, function() {})
         })
 
         it('Handles an error stanza response', function(done) {
@@ -181,7 +187,7 @@ describe('Publish-Subscribe', function() {
                 jid: 'juliet@shakespeare.lit',
                 subscription: 'subscribed'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscription',
                 request,
                 callback
@@ -203,7 +209,7 @@ describe('Publish-Subscribe', function() {
                 jid: 'juliet@shakespeare.lit',
                 subscription: 'subscribed'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscription',
                 request,
                 callback

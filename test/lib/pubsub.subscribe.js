@@ -13,8 +13,8 @@ describe('Publish-Subscribe', function() {
     var pubsub, socket, xmpp, manager
 
     before(function() {
-        socket = new helper.Eventer()
-        xmpp = new helper.Eventer()
+        socket = new helper.SocketEventer()
+        xmpp = new helper.XmppEventer()
         manager = {
             socket: socket,
             client: xmpp,
@@ -27,6 +27,12 @@ describe('Publish-Subscribe', function() {
             jid: 'juliet@example.net'
         }
         pubsub = new PubSub()
+        pubsub.init(manager)
+    })
+
+    beforeEach(function() {
+        socket.removeAllListeners()
+        xmpp.removeAllListeners()
         pubsub.init(manager)
     })
 
@@ -44,7 +50,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.subscribe', {})
+            socket.send('xmpp.pubsub.subscribe', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -59,7 +65,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.subscribe', {}, true)
+            socket.send('xmpp.pubsub.subscribe', {}, true)
         })
 
         it('Errors if no \'to\' key provided', function(done) {
@@ -76,7 +82,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscribe', request, callback)
+            socket.send('xmpp.pubsub.subscribe', request, callback)
         })
 
         it('Errors if no \'node\' key provided', function(done) {
@@ -93,7 +99,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscribe', request, callback)
+            socket.send('xmpp.pubsub.subscribe', request, callback)
         })
 
         it('Sends expected stanza', function(done) {
@@ -115,7 +121,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(manager.jid)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscribe', request, function() {})
+            socket.send('xmpp.pubsub.subscribe', request, function() {})
         })
 
         it('Sends expected stanza with jid', function(done) {
@@ -130,7 +136,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.jid)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscribe', request, function() {})
+            socket.send('xmpp.pubsub.subscribe', request, function() {})
         })
 
         it('Handles an error stanza response', function(done) {
@@ -149,7 +155,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscribe',
                 request,
                 callback
@@ -169,7 +175,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscribe',
                 request,
                 callback
@@ -189,7 +195,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscribe',
                 request,
                 callback
@@ -209,7 +215,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscribe',
                 request,
                 callback
@@ -232,7 +238,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.unsubscribe', {})
+            socket.send('xmpp.pubsub.unsubscribe', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -247,7 +253,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.unsubscribe', {}, true)
+            socket.send('xmpp.pubsub.unsubscribe', {}, true)
         })
 
         it('Errors if no \'to\' key provided', function(done) {
@@ -264,7 +270,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.unsubscribe', request, callback)
+            socket.send('xmpp.pubsub.unsubscribe', request, callback)
         })
 
         it('Errors if no \'node\' key provided', function(done) {
@@ -281,7 +287,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.unsubscribe', request, callback)
+            socket.send('xmpp.pubsub.unsubscribe', request, callback)
         })
 
         it('Sends expected stanza', function(done) {
@@ -301,7 +307,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.unsubscribe', request, function() {})
+            socket.send('xmpp.pubsub.unsubscribe', request, function() {})
         })
 
         it('Sends expected stanza when \'subscription id\'', function(done) {
@@ -316,7 +322,7 @@ describe('Publish-Subscribe', function() {
                     .attrs.subid.should.equal('123456')
                 done()
             })
-            socket.emit('xmpp.pubsub.unsubscribe', request, function() {})
+            socket.send('xmpp.pubsub.unsubscribe', request, function() {})
         })
 
         it('Handles an error stanza response', function(done) {
@@ -335,7 +341,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.unsubscribe',
                 request,
                 callback
@@ -355,7 +361,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.unsubscribe',
                 request,
                 callback
@@ -378,7 +384,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', {})
+            socket.send('xmpp.pubsub.subscriptions', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -393,7 +399,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', {}, true)
+            socket.send('xmpp.pubsub.subscriptions', {}, true)
         })
 
         it('Errors if missing \'to\' key', function(done) {
@@ -410,7 +416,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscriptions', request, callback)
+            socket.send('xmpp.pubsub.subscriptions', request, callback)
         })
 
         it('Errors if node subs requested and no owner', function(done) {
@@ -427,7 +433,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.emit('xmpp.pubsub.subscriptions', request, callback)
+            socket.send('xmpp.pubsub.subscriptions', request, callback)
         })
 
         it('Sends expected stanza for node owner', function(done) {
@@ -448,7 +454,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
+            socket.send('xmpp.pubsub.subscriptions', request, function() {})
         })
 
         it('Sends expected stanza for user subscriptions', function(done) {
@@ -468,7 +474,7 @@ describe('Publish-Subscribe', function() {
                 )
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
+            socket.send('xmpp.pubsub.subscriptions', request, function() {})
         })
 
         it('Correct stanza for user subscriptions to node', function(done) {
@@ -488,7 +494,7 @@ describe('Publish-Subscribe', function() {
                     .should.equal(request.node)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
+            socket.send('xmpp.pubsub.subscriptions', request, function() {})
         })
 
         it('Handles error stanza response', function(done) {
@@ -507,7 +513,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscriptions',
                 request,
                 callback
@@ -542,7 +548,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscriptions',
                 request,
                 callback
@@ -564,7 +570,7 @@ describe('Publish-Subscribe', function() {
                 rsm.getChildText('before').should.equal(request.rsm.before)
                 done()
             })
-            socket.emit('xmpp.pubsub.subscriptions', request, function() {})
+            socket.send('xmpp.pubsub.subscriptions', request, function() {})
         })
 
         it('Adds RSM to results', function(done) {
@@ -585,7 +591,7 @@ describe('Publish-Subscribe', function() {
                 to: 'pubsub.shakespeare.lit',
                 node: 'twelfth night'
             }
-            socket.emit(
+            socket.send(
                 'xmpp.pubsub.subscriptions',
                 request,
                 callback
@@ -610,7 +616,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subscription.config.default', {})
+                socket.send('xmpp.pubsub.subscription.config.default', {})
             })
 
             it('Errors when non-function callback provided', function(done) {
@@ -625,7 +631,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subscription.config.default', {}, true)
+                socket.send('xmpp.pubsub.subscription.config.default', {}, true)
             })
 
             it('Errors when no \'to\' key provided', function(done) {
@@ -642,7 +648,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.default',
                     request,
                     callback
@@ -662,7 +668,7 @@ describe('Publish-Subscribe', function() {
                     should.not.exist(element.attrs.node)
                     done()
                 })
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.default',
                     request,
                     function() {}
@@ -685,7 +691,7 @@ describe('Publish-Subscribe', function() {
                     element.attrs.node.should.equal(request.node)
                     done()
                 })
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.default',
                     request,
                     function() {}
@@ -708,7 +714,7 @@ describe('Publish-Subscribe', function() {
                     to: 'pubsub.shakespeare.lit',
                     node: 'twelfth night'
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.default',
                     request,
                     callback
@@ -734,7 +740,7 @@ describe('Publish-Subscribe', function() {
                     to: 'pubsub.shakespeare.lit',
                     node: 'twelfth night'
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.default',
                     request,
                     callback
@@ -757,7 +763,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subscription.config.get', {})
+                socket.send('xmpp.pubsub.subscription.config.get', {})
             })
 
             it('Errors when non-function callback provided', function(done) {
@@ -772,7 +778,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subscription.config.get', {}, true)
+                socket.send('xmpp.pubsub.subscription.config.get', {}, true)
             })
 
             it('Errors when no \'to\' key provided', function(done) {
@@ -789,7 +795,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.get',
                     request,
                     callback
@@ -810,7 +816,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.get',
                     request,
                     callback
@@ -833,7 +839,7 @@ describe('Publish-Subscribe', function() {
                     element.attrs.node.should.equal(request.node)
                     done()
                 })
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.get',
                     request,
                     function() {}
@@ -856,7 +862,7 @@ describe('Publish-Subscribe', function() {
                     to: 'pubsub.shakespeare.lit',
                     node: 'twelfth night'
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.get',
                     request,
                     callback
@@ -882,7 +888,7 @@ describe('Publish-Subscribe', function() {
                     to: 'pubsub.shakespeare.lit',
                     node: 'twelfth night'
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.get',
                     request,
                     callback
@@ -906,7 +912,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subscription.config.set', {})
+                socket.send('xmpp.pubsub.subscription.config.set', {})
             })
 
             it('Errors when non-function callback provided', function(done) {
@@ -921,7 +927,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 })
-                socket.emit('xmpp.pubsub.subscription.config.set', {}, true)
+                socket.send('xmpp.pubsub.subscription.config.set', {}, true)
             })
 
             it('Errors when no \'to\' key provided', function(done) {
@@ -938,7 +944,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
@@ -959,7 +965,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
@@ -983,7 +989,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
@@ -1008,7 +1014,7 @@ describe('Publish-Subscribe', function() {
                     xmpp.removeAllListeners('stanza')
                     done()
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
@@ -1049,7 +1055,7 @@ describe('Publish-Subscribe', function() {
                     ],
                     jid: 'romeo@example.com'
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     function() {}
@@ -1071,7 +1077,7 @@ describe('Publish-Subscribe', function() {
                         { var: 'pubsub#include_body', value: false }
                     ]
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     function() {}
@@ -1095,7 +1101,7 @@ describe('Publish-Subscribe', function() {
                     node: 'twelfth night',
                     form: []
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
@@ -1116,7 +1122,7 @@ describe('Publish-Subscribe', function() {
                     node: 'twelfth night',
                     form: []
                 }
-                socket.emit(
+                socket.send(
                     'xmpp.pubsub.subscription.config.set',
                     request,
                     callback
