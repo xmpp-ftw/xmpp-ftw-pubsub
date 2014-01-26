@@ -47,7 +47,6 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            console.log(socket, xmpp)
             socket.send('xmpp.pubsub.config.get', {})
         })
 
