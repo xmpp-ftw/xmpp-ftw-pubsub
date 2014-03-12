@@ -5,6 +5,7 @@
 var should  = require('should')
   , PubSub  = require('../../index')
   , helper  = require('../helper')
+  , Jid     = require('node-xmpp-core').JID
 
 var RSM_NS = require('xmpp-ftw').utils['xep-0059'].NS
 
@@ -24,7 +25,8 @@ describe('Publish-Subscribe', function() {
             makeCallback: function(error, data) {
                 this.callback(error, data)
             },
-            jid: 'juliet@example.net'
+            jid: 'juliet@example.net',
+            fullJid: new Jid('juliet@example.net/resource')
         }
         pubsub = new PubSub()
         pubsub.init(manager)
