@@ -5,6 +5,7 @@
 var should  = require('should')
   , PubSub  = require('../../index')
   , helper  = require('../helper')
+  , Jid     = require('node-xmpp-core').JID
 
 var RSM_NS = require('xmpp-ftw').utils['xep-0059'].NS
 
