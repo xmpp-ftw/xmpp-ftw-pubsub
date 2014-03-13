@@ -24,7 +24,13 @@ describe('Publish-Subscribe', function() {
             makeCallback: function(error, data) {
                 this.callback(error, data)
             },
-            jid: 'juliet@example.net'
+            jid: 'juliet@example.net',
+            getJidType: function(type) {
+                if ('bare' === type) {
+                    return 'juliet@example.net'
+                }
+                throw new Error('Unexpected jid type requested')
+            }
         }
         pubsub = new PubSub()
         pubsub.init(manager)
