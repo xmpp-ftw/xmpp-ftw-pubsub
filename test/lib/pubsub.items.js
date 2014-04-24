@@ -316,7 +316,11 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.should.eql({
                     type: 'cancel',
-                    condition: 'error-condition'
+                    condition: 'error-condition',
+                    application: {
+                        condition: 'unknown-error',
+                        xmlns: 'http://jabber.org/protocol/pubsub#errors'
+                    }
                 })
                 done()
             }
@@ -538,7 +542,11 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.should.eql({
                     type: 'cancel',
-                    condition: 'error-condition'
+                    condition: 'error-condition',
+                    application: {
+                        condition: 'unknown-error',
+                        xmlns: 'http://jabber.org/protocol/pubsub#errors'
+                    }
                 })
                 done()
             }
@@ -718,7 +726,11 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.should.eql({
                     type: 'cancel',
-                    condition: 'error-condition'
+                    condition: 'error-condition',
+                    application: {
+                        condition: 'unknown-error',
+                        xmlns: 'http://jabber.org/protocol/pubsub#errors'
+                    }
                 })
                 done()
             }
@@ -849,7 +861,11 @@ describe('Publish-Subscribe', function() {
                 should.not.exist(success)
                 error.should.eql({
                     type: 'cancel',
-                    condition: 'error-condition'
+                    condition: 'error-condition',
+                    application: {
+                        condition: 'unknown-error',
+                        xmlns: 'http://jabber.org/protocol/pubsub#errors'
+                    }
                 })
                 done()
             }
