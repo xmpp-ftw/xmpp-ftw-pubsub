@@ -32,7 +32,7 @@
   "dependencies": {
     "xmpp-ftw": "~1",
     "xmpp-ftw-item-parser": "~1",
-    "ltx": "~0.3.4"
+    "ltx": "^0.5.2"
   },
   "devDependencies": {
     "mocha": "~1.8.1",
