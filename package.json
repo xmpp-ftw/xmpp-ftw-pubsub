@@ -1,6 +1,6 @@
 {
   "name": "xmpp-ftw-pubsub",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Publish-Subscribe/PubSub (XEP-0060) plugin for XMPP-FTW",
   "main": "index.js",
   "directories": {
