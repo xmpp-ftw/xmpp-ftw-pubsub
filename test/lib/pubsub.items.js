@@ -373,7 +373,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.send('xmpp.pubsub.unsubscribe', {})
+            socket.send('xmpp.pubsub.retrieve', {})
         })
 
         it('Errors when non-function callback provided', function(done) {
@@ -388,7 +388,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             })
-            socket.send('xmpp.pubsub.unsubscribe', {}, true)
+            socket.send('xmpp.pubsub.retrieve', {}, true)
         })
 
         it('Errors when no \'to\' key', function(done) {
@@ -405,7 +405,7 @@ describe('Publish-Subscribe', function() {
                 xmpp.removeAllListeners('stanza')
                 done()
             }
-            socket.send('xmpp.pubsub.unsubscribe', request, callback)
+            socket.send('xmpp.pubsub.retrieve', request, callback)
         })
 
         it('Errors when no \'node\' key', function(done) {
