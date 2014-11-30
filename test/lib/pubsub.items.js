@@ -560,6 +560,33 @@ describe('Publish-Subscribe', function() {
                 callback
             )
         })
+        
+        it('Handles error response stanza', function(done) {
+            xmpp.once('stanza', function() {
+                manager.makeCallback(helper.getStanza('iq-error'))
+            })
+            var callback = function(error, success) {
+                should.not.exist(success)
+                error.should.eql({
+                    type: 'cancel',
+                    condition: 'error-condition',
+                    application: {
+                        condition: 'unknown-error',
+                        xmlns: 'http://jabber.org/protocol/pubsub#errors'
+                    }
+                })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.send(
+                'xmpp.pubsub.retrieve',
+                request,
+                callback
+            )
+        })
 
         it('Returns items on expected response', function(done) {
             xmpp.once('stanza', function() {
@@ -572,6 +599,26 @@ describe('Publish-Subscribe', function() {
                 success[0].entry.should.eql({ body: 'item-1-content' })
                 success[1].id.should.equal('item-2')
                 success[1].entry.should.eql({ body: 'item-2-content' })
+                done()
+            }
+            var request = {
+                to: 'pubsub.shakespeare.lit',
+                node: 'twelfth night'
+            }
+            socket.send(
+                'xmpp.pubsub.retrieve',
+                request,
+                callback
+            )
+        })
+        
+        it('Handles response stanza with \'publisher\'', function(done) {
+            xmpp.once('stanza', function() {
+                manager.makeCallback(helper.getStanza('items-get-publisher'))
+            })
+            var callback = function(error, success) {
+                success[0].id.should.equal('item-1')
+                success[0].publisher.should.equal('romeo@shakespeare.lit')
                 done()
             }
             var request = {

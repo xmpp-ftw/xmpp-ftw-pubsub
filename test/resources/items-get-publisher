@@ -1,0 +1,12 @@
+<iq type='result'
+    from='pubsub.shakespeare.lit'
+    to='juliet@example.net/balcony'
+    id='1'>
+  <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+    <items node='twelfth night'>
+      <item id='item-1' publisher='romeo@shakespeare.lit'>
+        <body>item-1-content</body>
+      </item>
+    </items>
+  </pubsub>
+</iq>
