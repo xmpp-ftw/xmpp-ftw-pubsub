@@ -32,9 +32,12 @@
   "dependencies": {
     "xmpp-ftw": "~1",
     "xmpp-ftw-item-parser": "~1",
-    "ltx": "^0.5.2"
+    "ltx": "^0.7.2"
   },
   "devDependencies": {
+    "coveralls": "^2.11.2",
+    "grunt-mocha-istanbul": "^2.2.0",
+    "istanbul": "^0.3.2",
     "mocha": "~1.8.1",
     "should": "~1.2.2",
     "grunt-contrib-jshint": "~0.7.2",
