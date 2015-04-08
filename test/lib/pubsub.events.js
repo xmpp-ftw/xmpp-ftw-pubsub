@@ -73,6 +73,12 @@ describe('Publish-Subscribe', function() {
                 pubsub.NS_PUBSUB + '" /></message>')
             pubsub.handles(stanza).should.be.false
         })
+        
+        it('Returns false if it can\'t handle an event', function() {
+            var stanza = new ltx.parse('<message><event xmlns="' +
+                pubsub.NS_EVENT + '" /><random /></message>')
+            pubsub.handle(stanza).should.equal(false)
+        })
 
     })
 

@@ -12,6 +12,7 @@ See the XMPP-FTW demo repository - https://github.com/xmpp-ftw/xmpp-ftw-demo
 # Build status
 
 [![Build Status](https://secure.travis-ci.org/xmpp-ftw/xmpp-ftw-pubsub.png)](http://travis-ci.org/xmpp-ftw/xmpp-ftw-pubsub)
+[![Coverage Status](https://img.shields.io/coveralls/xmpp-ftw/xmpp-ftw-pubsub.svg)](https://coveralls.io/r/xmpp-ftw/xmpp-ftw-pubsub)
 
 # Install
 
@@ -24,7 +25,3 @@ npm i --save xmpp-ftw-pubsub
 ```
 npm test
 ```
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/xmpp-ftw/xmpp-ftw-pubsub/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
