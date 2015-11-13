@@ -32,18 +32,18 @@
   "dependencies": {
     "xmpp-ftw": "~1",
     "xmpp-ftw-item-parser": "~1",
-    "ltx": "^0.7.2"
+    "ltx": "^2.1.1"
   },
   "devDependencies": {
-    "coveralls": "^2.11.2",
-    "grunt-mocha-istanbul": "^2.2.0",
-    "istanbul": "^0.3.2",
-    "mocha": "~1.8.1",
-    "should": "~1.2.2",
-    "grunt-contrib-jshint": "~0.7.2",
+    "coveralls": "^2.11.4",
+    "grunt-mocha-istanbul": "^3.0.1",
+    "istanbul": "^0.4.0",
+    "mocha": "~2.3.3",
+    "should": "~7.1.1",
+    "grunt-contrib-jshint": "~0.11.3",
     "grunt": "~0.4.2",
-    "grunt-mocha-cli": "~1.4.0",
-    "node-xmpp-core": "^1.0.0-alpha3"
+    "grunt-mocha-cli": "~2.0.0",
+    "node-xmpp-core": "^4.2.0"
   },
   "peerDependencies": {
     "xmpp-ftw": "1.X"
