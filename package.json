@@ -32,7 +32,7 @@
   "dependencies": {
     "xmpp-ftw": "~1",
     "xmpp-ftw-item-parser": "~1",
-    "ltx": "^2.1.1"
+    "ltx": "^2.2.1"
   },
   "devDependencies": {
     "coveralls": "^2.11.4",
