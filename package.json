@@ -30,7 +30,7 @@
     "url": "https://github.com/xmpp-ftw/xmpp-ftw-pubsub/issues"
   },
   "dependencies": {
-    "xmpp-ftw": "~1",
+    "xmpp-ftw": "~2.0.0",
     "xmpp-ftw-item-parser": "~1",
     "ltx": "^2.1.1"
   },
