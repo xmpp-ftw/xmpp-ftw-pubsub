@@ -1,6 +1,8 @@
 xmpp-ftw-pubsub
 ===============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/xmpp-ftw/xmpp-ftw-pubsub.svg)](https://greenkeeper.io/)
+
 A Publish-Subscribe/PubSub (XEP-0060) plugin for XMPP-FTW.
 
 https://github.com/xmpp-ftw/xmpp-ftw.git
